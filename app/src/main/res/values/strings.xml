@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name">Aplicacio Android</string>
+    <string name="app_name">NOM DE LA APLICACIO</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="prompt_password">Contrasenya</string>
+    <string name="action_sign_in">Entrar o registrar-se</string>
+    <string name="action_sign_in_short">Entrar</string>
+    <string name="welcome">"Benvingut/da!"</string>
+    <string name="invalid_username">Usuari invalid</string>
+    <string name="invalid_password">La contrasenya ha de tenir >5 caracters</string>
+    <string name="login_failed">"Login fallit"</string>
+    <!-- Other -->
 </resources>
