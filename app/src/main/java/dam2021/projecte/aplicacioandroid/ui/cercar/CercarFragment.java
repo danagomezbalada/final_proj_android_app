@@ -1,4 +1,4 @@
-package dam2021.projecte.aplicacioandroid.ui.dashboard;
+package dam2021.projecte.aplicacioandroid.ui.cercar;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,17 +14,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import dam2021.projecte.aplicacioandroid.R;
 
-public class DashboardFragment extends Fragment {
+public class CercarFragment extends Fragment {
 
-    private DashboardViewModel dashboardViewModel;
+    private CercarViewModel cercarViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        cercarViewModel =
+                new ViewModelProvider(this).get(CercarViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_cercar, container, false);
         final TextView textView = root.findViewById(R.id.text_dashboard);
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        cercarViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

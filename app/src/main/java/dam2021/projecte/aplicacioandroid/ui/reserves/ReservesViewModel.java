@@ -1,16 +1,16 @@
-package dam2021.projecte.aplicacioandroid.ui.notifications;
+package dam2021.projecte.aplicacioandroid.ui.reserves;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class NotificationsViewModel extends ViewModel {
+public class ReservesViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public NotificationsViewModel() {
+    public ReservesViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is notifications fragment");
+        mText.setValue("Aqui surten les reserves.");
     }
 
     public LiveData<String> getText() {

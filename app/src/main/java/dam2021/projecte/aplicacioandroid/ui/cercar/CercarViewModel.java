@@ -1,16 +1,16 @@
-package dam2021.projecte.aplicacioandroid.ui.dashboard;
+package dam2021.projecte.aplicacioandroid.ui.cercar;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class DashboardViewModel extends ViewModel {
+public class CercarViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public DashboardViewModel() {
+    public CercarViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is dashboard fragment");
+        mText.setValue("Aqui es pot cercar");
     }
 
     public LiveData<String> getText() {
