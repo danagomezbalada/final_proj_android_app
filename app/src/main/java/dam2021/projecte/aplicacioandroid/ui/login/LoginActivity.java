@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import dam2021.projecte.aplicacioandroid.MainActivity;
 import dam2021.projecte.aplicacioandroid.R;
 import dam2021.projecte.aplicacioandroid.ui.login.LoginViewModel;
 import dam2021.projecte.aplicacioandroid.ui.login.LoginViewModelFactory;
@@ -115,6 +117,10 @@ public class LoginActivity extends AppCompatActivity {
                 loadingProgressBar.setVisibility(View.VISIBLE);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
+
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                startActivity(i);
+
             }
         });
     }

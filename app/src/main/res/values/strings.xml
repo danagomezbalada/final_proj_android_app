@@ -9,9 +9,8 @@
     <string name="invalid_username">Usuari invalid</string>
     <string name="invalid_password">La contrasenya ha de tenir >5 caracters</string>
     <string name="login_failed">"Login fallit"</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
     <!-- Other -->
+    <string name="title_home">Inici</string>
+    <string name="title_dashboard">Cercar</string>
+    <string name="title_notifications">Reserves</string>
 </resources>
