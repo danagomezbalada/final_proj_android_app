@@ -20,6 +20,8 @@ public class HomeFragment extends Fragment {
 
     private Bundle data;
 
+    //TODO: Afegir funcionalitat de boto enrere
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         homeViewModel =
