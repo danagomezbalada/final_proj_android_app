@@ -1,10 +1,9 @@
-package dam2021.projecte.aplicacioandroid.ui.reserves;
+package dam2021.projecte.aplicacioandroid.ui.activitats;
 
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,35 +11,31 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import dam2021.projecte.aplicacioandroid.R;
-import dam2021.projecte.aplicacioandroid.ui.home.RecyclerItemClickListener;
-import dam2021.projecte.aplicacioandroid.ui.reserves.dummy.DummyContent;
+import dam2021.projecte.aplicacioandroid.ui.activitats.dummy.DummyContent;
 
 /**
  * A fragment representing a list of Items.
  */
-public class ReservesFragment extends Fragment {
+public class ActivitatsFragment extends Fragment {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
-    private int mColumnCount = 1;
-
-    private Bundle data;
+    private int mColumnCount = 2;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ReservesFragment() {
+    public ActivitatsFragment() {
     }
 
     // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static ReservesFragment newInstance(int columnCount) {
-        ReservesFragment fragment = new ReservesFragment();
+    public static ActivitatsFragment newInstance(int columnCount) {
+        ActivitatsFragment fragment = new ActivitatsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
@@ -59,7 +54,7 @@ public class ReservesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_reserves_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_activitats_list, container, false);
 
         // Set the adapter
         if (view instanceof RecyclerView) {
@@ -70,23 +65,7 @@ public class ReservesFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyReservesRecyclerViewAdapter(DummyContent.ITEMS));
-            recyclerView.addOnItemTouchListener(
-                    new RecyclerItemClickListener(context, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-                        @Override public void onItemClick(View view, int position) {
-                            data = new Bundle();
-                            String nom = ((TextView) recyclerView.findViewById(R.id.details)).getText().toString();
-                            data.putString("id", nom);
-                            NavHostFragment.findNavController(ReservesFragment.this)
-                                    .navigate(R.id.action_navigation_home_to_homeFragment, data);
-
-                        }
-
-                        @Override public void onLongItemClick(View view, int position) {
-                            // do whatever
-                        }
-                    })
-            );
+            recyclerView.setAdapter(new MyActivitatsRecyclerViewAdapter(DummyContent.ITEMS));
         }
         return view;
     }
