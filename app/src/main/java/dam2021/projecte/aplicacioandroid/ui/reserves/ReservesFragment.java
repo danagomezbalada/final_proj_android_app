@@ -77,8 +77,8 @@ public class ReservesFragment extends Fragment {
                             data = new Bundle();
                             String nom = ((TextView) recyclerView.findViewById(R.id.details)).getText().toString();
                             data.putString("id", nom);
-                            NavHostFragment.findNavController(ReservesFragment.this)
-                                    .navigate(R.id.action_navigation_home_to_homeFragment, data);
+                            /*NavHostFragment.findNavController(ReservesFragment.this)
+                                    .navigate(R.id.action_navigation_home_to_homeFragment, data);*/
 
                         }
 
