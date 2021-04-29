@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import dam2021.projecte.aplicacioandroid.R;
-import dam2021.projecte.aplicacioandroid.ui.home.RecyclerItemClickListener;
 import dam2021.projecte.aplicacioandroid.ui.reserves.dummy.DummyContent;
 
 /**
@@ -71,22 +70,6 @@ public class ReservesFragment extends Fragment {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
             recyclerView.setAdapter(new MyReservesRecyclerViewAdapter(DummyContent.ITEMS));
-            recyclerView.addOnItemTouchListener(
-                    new RecyclerItemClickListener(context, recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
-                        @Override public void onItemClick(View view, int position) {
-                            data = new Bundle();
-                            String nom = ((TextView) recyclerView.findViewById(R.id.details)).getText().toString();
-                            data.putString("id", nom);
-                            /*NavHostFragment.findNavController(ReservesFragment.this)
-                                    .navigate(R.id.action_navigation_home_to_homeFragment, data);*/
-
-                        }
-
-                        @Override public void onLongItemClick(View view, int position) {
-                            // do whatever
-                        }
-                    })
-            );
         }
         return view;
     }
