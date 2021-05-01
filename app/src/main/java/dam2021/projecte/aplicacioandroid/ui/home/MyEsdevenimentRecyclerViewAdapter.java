@@ -58,7 +58,7 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
                 String nom = ((TextView) v.findViewById(R.id.details)).getText().toString();
                 data.putString("id", nom);
                 Navigation.findNavController(v)
-                        .navigate(R.id.action_navigation_home_to_homeFragment, data);
+                        .navigate(R.id.action_navigation_home_to_activitatFragment, data);
 
             }
         });
