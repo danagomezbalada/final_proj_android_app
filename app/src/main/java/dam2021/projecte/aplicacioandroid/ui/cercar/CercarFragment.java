@@ -15,12 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import dam2021.projecte.aplicacioandroid.R;
 
 public class CercarFragment extends Fragment {
 
     private CercarViewModel cercarViewModel;
+    private Bundle data;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -29,19 +31,19 @@ public class CercarFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_cercar, container, false);
 
 
-        Spinner spinner = (Spinner) view.findViewById(R.id.spinner);
+        Spinner spinner = view.findViewById(R.id.spinner);
         //TODO: canviar tipus de spinner per obtenir valors de BBDD encomptes de fitxer
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(),
                 R.array.test_array, R.layout.spinner_layout);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        view.findViewById(R.id.botoCerca).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-                String test = spinner.getSelectedItem().toString();
-                Toast.makeText(view.getContext(), test, Toast.LENGTH_LONG).show();
-            }
+        view.findViewById(R.id.botoCerca).setOnClickListener(view1 -> {
+            String test = spinner.getSelectedItem().toString();
+            data = new Bundle();
+            data.putString("id", test);
+            Navigation.findNavController(view1)
+                    .navigate(R.id.action_navigation_cercarFragment_to_activitatFragment, data);
         });
 
         return view;

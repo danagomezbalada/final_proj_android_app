@@ -19,17 +19,35 @@
         android:id="@+id/navigation_dashboard"
         android:name="dam2021.projecte.aplicacioandroid.ui.cercar.CercarFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_cercar" />
+        tools:layout="@layout/fragment_cercar">
+        <action
+            android:id="@+id/action_navigation_cercarFragment_to_activitatFragment"
+            app:destination="@id/activitatFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="dam2021.projecte.aplicacioandroid.ui.reserves.ReservesFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_reserves" />
+        tools:layout="@layout/fragment_reserves">
+        <action
+            android:id="@+id/action_navigation_reservesFragment_to_activitatDetallFragment"
+            app:destination="@id/activitatDetallFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/activitatFragment"
         android:name="dam2021.projecte.aplicacioandroid.ui.activitats.ActivitatsFragment"
         android:label="@string/title_activitats"
-        tools:layout="@layout/fragment_activitats" />
+        tools:layout="@layout/fragment_activitats">
+        <action
+            android:id="@+id/action_navigation_activitatFragment_to_activitatDetallFragment"
+            app:destination="@id/activitatDetallFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/activitatDetallFragment"
+        android:name="dam2021.projecte.aplicacioandroid.ui.activitats.ActivitatDetallFragment"
+        android:label="@string/title_detall_activitat"
+        tools:layout="@layout/fragment_activitat_detall" />
 </navigation>
