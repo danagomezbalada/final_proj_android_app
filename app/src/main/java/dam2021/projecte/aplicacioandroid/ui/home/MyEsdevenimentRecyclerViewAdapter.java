@@ -1,5 +1,6 @@
 package dam2021.projecte.aplicacioandroid.ui.home;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.Navigation;
@@ -37,6 +38,7 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
     }
 
     @Override
+    @NonNull
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_esdeveniment, parent, false);
@@ -50,17 +52,13 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
         holder.mContentView.setText(mValues.get(position).content);
         holder.mDetailsView.setText(mValues.get(position).details);
 
-        holder.mCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                data = new Bundle();
-                String nom = ((TextView) v.findViewById(R.id.details)).getText().toString();
-                data.putString("id", nom);
-                Navigation.findNavController(v)
-                        .navigate(R.id.action_navigation_home_to_activitatFragment, data);
+        holder.mCard.setOnClickListener(v -> {
+            data = new Bundle();
+            String nom = ((TextView) v.findViewById(R.id.details)).getText().toString();
+            data.putString("id", nom);
+            Navigation.findNavController(v)
+                    .navigate(R.id.action_navigation_home_to_activitatFragment, data);
 
-            }
         });
     }
 
@@ -80,13 +78,14 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
-            mDetailsView = (TextView) view.findViewById(R.id.details);
-            mCard = (CardView) view.findViewById(R.id.card);
+            mIdView = view.findViewById(R.id.item_number);
+            mContentView = view.findViewById(R.id.content);
+            mDetailsView = view.findViewById(R.id.details);
+            mCard = view.findViewById(R.id.card);
         }
 
         @Override
+        @NonNull
         public String toString() {
             return super.toString() + " '" + mContentView.getText() + "'";
         }

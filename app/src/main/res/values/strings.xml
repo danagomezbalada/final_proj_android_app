@@ -15,4 +15,7 @@
     <string name="title_notifications">Reserves</string>
     <string name="button_obrir">Obrir</string>
     <string name="title_activitats">Activitats</string>
+    <string name="title_detall_activitat">Detalls de l\'activitat</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
