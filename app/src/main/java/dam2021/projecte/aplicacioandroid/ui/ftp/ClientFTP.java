@@ -17,5 +17,9 @@ public class ClientFTP {
     public static String user = "projectedamjds";
     public static String password = "projecte2021";
     public static String versio = "versio.txt";
+    public static String esdeveniments = "esdeveniments.xml";
+    public static String categories = "categories.xml";
+    public static String activitats = "activitats.xml";
+    public static String reserves = "reserves.xml";
 
 }

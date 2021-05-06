@@ -40,7 +40,7 @@ public class SplashActivity extends AppCompatActivity {
 
         // Creem o obrim el fitxer versio.txt local
         File sdcard = Environment.getExternalStorageDirectory();
-        File versio = new File(sdcard, "versio.txt");
+        File versio = new File(sdcard, "/Android/data/dam2021.projecte.aplicacioandroid/files/versio.txt");
 
         try {
             BufferedReader br = new BufferedReader(new FileReader(versio));
@@ -55,7 +55,7 @@ public class SplashActivity extends AppCompatActivity {
                 try {
                     // Descarreguem el fitxer versió del FTP
                     new descarregarVersio().execute();
-                    versio = new File(sdcard, "versio.txt");
+                    versio = new File(sdcard, "/Android/data/dam2021.projecte.aplicacioandroid/files/versio.txt");
                     BufferedReader brNou = new BufferedReader(new FileReader(versio));
                     String lineNou;
 
@@ -64,10 +64,14 @@ public class SplashActivity extends AppCompatActivity {
                         Double versioNou = Double.parseDouble(lineNou);
 
                         // Comparem les versions dels fitxers versió (local vs descarregat FTP)
-                        if (versioNou > versioLocal){
-                            Toast.makeText(getApplicationContext(), "Hi ha una versió nova", Toast.LENGTH_SHORT).show();
+                        int retval = Double.compare(versioNou, versioLocal);
+                        if (retval > 0){
+                            Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
+                            descarregarXML();
+                            scheduleSplashScreen();
                         }else{
                             Toast.makeText(getApplicationContext(), "Tens l'última versió", Toast.LENGTH_SHORT).show();
+                            scheduleSplashScreen();
                         }
 
                     }
@@ -75,7 +79,9 @@ public class SplashActivity extends AppCompatActivity {
                     br.close();
                 } catch (FileNotFoundException ef) {
                     // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
+                    Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
                     new descarregarVersio().execute();
+                    descarregarXML();
                     scheduleSplashScreen();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -85,9 +91,12 @@ public class SplashActivity extends AppCompatActivity {
 
             br.close();
         } catch (FileNotFoundException ef) {
+
             // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
             new descarregarVersio().execute();
+            descarregarXML();
             scheduleSplashScreen();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -120,13 +129,77 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    // Classe que descarrega els esdeveniments amb asincronía
+    private class descarregarEsdeveniments extends AsyncTask<Void, Integer, Long> {
+        @Override
+        protected Long doInBackground(Void... voids) {
+            establirFTP(ClientFTP.esdeveniments);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+
+        }
+    }
+
+    // Classe que descarrega les categories amb asincronía
+    private class descarregarCategories extends AsyncTask<Void, Integer, Long> {
+        @Override
+        protected Long doInBackground(Void... voids) {
+            establirFTP(ClientFTP.categories);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+
+        }
+    }
+
+    // Classe que descarrega les activitats amb asincronía
+    private class descarregarActivitats extends AsyncTask<Void, Integer, Long> {
+        @Override
+        protected Long doInBackground(Void... voids) {
+            establirFTP(ClientFTP.activitats);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+
+        }
+    }
+
+    // Classe que descarrega les reserves amb asincronía
+    private class descarregarReserves extends AsyncTask<Void, Integer, Long> {
+        @Override
+        protected Long doInBackground(Void... voids) {
+            establirFTP(ClientFTP.reserves);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+
+        }
+    }
+
+    // Funció que executa la descàrrega de tots els XML
+    private void descarregarXML(){
+        new descarregarEsdeveniments().execute();
+        new descarregarCategories().execute();
+        new descarregarActivitats().execute();
+        new descarregarReserves().execute();
+    }
+
     // Establim la descàrrega del fitxer al servidor FTP
     private boolean establirFTP(String nomFitxer) {
 
         try {
             FileOutputStream fitxer;
             File sdcard = Environment.getExternalStorageDirectory();
-            File targetFile = new File(sdcard, nomFitxer);
+            File targetFile = new File(sdcard, "/Android/data/dam2021.projecte.aplicacioandroid/files/" + nomFitxer);
 
             FTPClient ftpClient = new FTPClient();
             try {
