@@ -2,9 +2,12 @@ package dam2021.projecte.aplicacioandroid.ui.login;
 
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -23,6 +27,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import dam2021.projecte.aplicacioandroid.MainActivity;
 import dam2021.projecte.aplicacioandroid.R;
 import dam2021.projecte.aplicacioandroid.ui.login.LoginViewModel;
@@ -31,6 +41,7 @@ import dam2021.projecte.aplicacioandroid.ui.login.LoginViewModelFactory;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
+    private FirebaseAuth mAuth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,12 +125,76 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
 
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(i);
+                mAuth = FirebaseAuth.getInstance();
+
+                String email = usernameEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+
+                email = email.trim();
+                password = password.trim();
+
+                if (email.isEmpty() || password.isEmpty()) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                    builder.setMessage("R.string.login_error_message")
+                            .setTitle("R.string.login_error_title")
+                            .setPositiveButton(android.R.string.ok, null);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else {
+                    mAuth.signInWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);*/
+                                        Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                        startActivity(i);
+                                    } else {
+
+                                        if (task.getException().toString().contains("FirebaseAuthInvalidUserException")) {
+
+                                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    switch (which){
+                                                        case DialogInterface.BUTTON_POSITIVE:
+                                                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                                            startActivity(i);
+                                                            break;
+
+                                                        case DialogInterface.BUTTON_NEGATIVE:
+                                                            //No button clicked - No es fa res
+                                                            break;
+                                                    }
+                                                }
+                                            };
+
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                            builder.setMessage(R.string.username_notExists)
+                                                    .setTitle(R.string.username_notExists_title)
+                                                    .setPositiveButton(R.string.yes,dialogClickListener)
+                                                    .setNegativeButton(R.string.no,dialogClickListener);
+                                            AlertDialog dialog = builder.create();
+                                            dialog.show();
+
+                                        }else {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                            builder.setMessage(task.getException().getMessage())
+                                                    .setTitle(R.string.login_failed)
+                                                    .setPositiveButton(android.R.string.ok, null);
+                                            AlertDialog dialog = builder.create();
+                                            dialog.show();
+                                        }
+
+                                    }
+                                }
+                            });
+                }
+
 
             }
         });
@@ -128,7 +203,7 @@ public class LoginActivity extends AppCompatActivity {
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
         // TODO : initiate successful logged in experience
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+        //Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
     private void showLoginFailed(@StringRes Integer errorString) {

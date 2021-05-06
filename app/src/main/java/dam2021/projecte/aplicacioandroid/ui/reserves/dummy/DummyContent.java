@@ -1,5 +1,7 @@
 package dam2021.projecte.aplicacioandroid.ui.reserves.dummy;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,12 +18,12 @@ public class DummyContent {
     /**
      * An array of sample (dummy) items.
      */
-    public static final List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+    public static final List<DummyItem> ITEMS = new ArrayList<>();
 
     /**
      * A map of sample (dummy) items, by ID.
      */
-    public static final Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
+    public static final Map<String, DummyItem> ITEM_MAP = new HashMap<>();
 
     private static final int COUNT = 25;
 
@@ -44,7 +46,7 @@ public class DummyContent {
     private static String makeDetails(int position) {
         StringBuilder builder = new StringBuilder();
         builder.append("Details about Item: ").append(position);
-        for (int i = 0; i < position; i++) {
+        for (int i = 0; i < 3; i++) {
             builder.append("\nMore details information here.");
         }
         return builder.toString();
@@ -65,6 +67,7 @@ public class DummyContent {
         }
 
         @Override
+        @NotNull
         public String toString() {
             return content;
         }
