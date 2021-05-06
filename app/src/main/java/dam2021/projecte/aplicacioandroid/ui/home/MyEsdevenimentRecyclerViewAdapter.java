@@ -48,9 +48,7 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
-        holder.mDetailsView.setText(mValues.get(position).details);
+        holder.mNomView.setText(mValues.get(position).id);
 
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
@@ -69,25 +67,21 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public final TextView mDetailsView;
+        public final TextView mNomView;
         public DummyItem mItem;
         public final CardView mCard;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.item_number);
-            mContentView = view.findViewById(R.id.content);
-            mDetailsView = view.findViewById(R.id.details);
+            mNomView = view.findViewById(R.id.nom_esdeveniment);
             mCard = view.findViewById(R.id.card);
         }
 
         @Override
         @NonNull
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString();
         }
     }
 }
