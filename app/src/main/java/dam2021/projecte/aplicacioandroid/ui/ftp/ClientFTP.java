@@ -12,14 +12,14 @@ import org.apache.commons.net.ftp.FTPClient;
 
 public class ClientFTP {
 
-    public static String server = "projectedamjds.insjoanbrudieu.cat";
-    public static int portNumber = 15741;
-    public static String user = "projectedamjds";
-    public static String password = "projecte2021";
-    public static String versio = "versio.txt";
-    public static String esdeveniments = "esdeveniments.xml";
-    public static String categories = "categories.xml";
-    public static String activitats = "activitats.xml";
-    public static String reserves = "reserves.xml";
+    public static String SERVER = "projectedamjds.insjoanbrudieu.cat";
+    public static int PORT_NUMBER = 15741;
+    public static String USER = "projectedamjds";
+    public static String PASSWORD = "projecte2021";
+    public static String VERSIO = "versio.txt";
+    public static String ESDEVENIMENTS = "esdeveniments.xml";
+    public static String CATEGORIES = "categories.xml";
+    public static String ACTIVITATS = "activitats.xml";
+    public static String RESERVES = "reserves.xml";
 
 }

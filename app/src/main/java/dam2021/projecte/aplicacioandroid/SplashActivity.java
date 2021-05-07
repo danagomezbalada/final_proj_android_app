@@ -36,69 +36,8 @@ public class SplashActivity extends AppCompatActivity {
         //scheduleSplashScreen();
         if (!checkPermission()){
             requestPermission();
-        }
-
-        // Creem o obrim el fitxer versio.txt local
-        File sdcard = Environment.getExternalStorageDirectory();
-        File versio = new File(sdcard, "/Android/data/dam2021.projecte.aplicacioandroid/files/versio.txt");
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(versio));
-            String line;
-
-            // Llegim el fitxer i comprovem si té contingut a la primera línia
-            if ((line = br.readLine()) != null) {
-
-                // Desem la versió del fitxer local
-                Double versioLocal = Double.parseDouble(line);
-
-                try {
-                    // Descarreguem el fitxer versió del FTP
-                    new descarregarVersio().execute();
-                    versio = new File(sdcard, "/Android/data/dam2021.projecte.aplicacioandroid/files/versio.txt");
-                    BufferedReader brNou = new BufferedReader(new FileReader(versio));
-                    String lineNou;
-
-                    // Llegim el fitxer i comprovem si té contingut a la primera línia
-                    if ((lineNou = brNou.readLine()) != null) {
-                        Double versioNou = Double.parseDouble(lineNou);
-
-                        // Comparem les versions dels fitxers versió (local vs descarregat FTP)
-                        int retval = Double.compare(versioNou, versioLocal);
-                        if (retval > 0){
-                            Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
-                            descarregarXML();
-                            scheduleSplashScreen();
-                        }else{
-                            Toast.makeText(getApplicationContext(), "Tens l'última versió", Toast.LENGTH_SHORT).show();
-                            scheduleSplashScreen();
-                        }
-
-                    }
-
-                    br.close();
-                } catch (FileNotFoundException ef) {
-                    // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
-                    Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
-                    new descarregarVersio().execute();
-                    descarregarXML();
-                    scheduleSplashScreen();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-            br.close();
-        } catch (FileNotFoundException ef) {
-
-            // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
-            new descarregarVersio().execute();
-            descarregarXML();
-            scheduleSplashScreen();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        }else{
+            comprovarVersioIDescarregarFitxers();
         }
 
     }
@@ -119,7 +58,7 @@ public class SplashActivity extends AppCompatActivity {
     private class descarregarVersio extends AsyncTask<Void, Integer, Long> {
         @Override
         protected Long doInBackground(Void... voids) {
-            establirFTP(ClientFTP.versio);
+            establirFTP(ClientFTP.VERSIO);
             return null;
         }
 
@@ -133,7 +72,7 @@ public class SplashActivity extends AppCompatActivity {
     private class descarregarEsdeveniments extends AsyncTask<Void, Integer, Long> {
         @Override
         protected Long doInBackground(Void... voids) {
-            establirFTP(ClientFTP.esdeveniments);
+            establirFTP(ClientFTP.ESDEVENIMENTS);
             return null;
         }
 
@@ -147,7 +86,7 @@ public class SplashActivity extends AppCompatActivity {
     private class descarregarCategories extends AsyncTask<Void, Integer, Long> {
         @Override
         protected Long doInBackground(Void... voids) {
-            establirFTP(ClientFTP.categories);
+            establirFTP(ClientFTP.CATEGORIES);
             return null;
         }
 
@@ -161,7 +100,7 @@ public class SplashActivity extends AppCompatActivity {
     private class descarregarActivitats extends AsyncTask<Void, Integer, Long> {
         @Override
         protected Long doInBackground(Void... voids) {
-            establirFTP(ClientFTP.activitats);
+            establirFTP(ClientFTP.ACTIVITATS);
             return null;
         }
 
@@ -175,7 +114,7 @@ public class SplashActivity extends AppCompatActivity {
     private class descarregarReserves extends AsyncTask<Void, Integer, Long> {
         @Override
         protected Long doInBackground(Void... voids) {
-            establirFTP(ClientFTP.reserves);
+            establirFTP(ClientFTP.RESERVES);
             return null;
         }
 
@@ -199,13 +138,13 @@ public class SplashActivity extends AppCompatActivity {
         try {
             FileOutputStream fitxer;
             File sdcard = Environment.getExternalStorageDirectory();
-            File targetFile = new File(sdcard, "/Android/data/dam2021.projecte.aplicacioandroid/files/" + nomFitxer);
+            File targetFile = new File(sdcard, nomFitxer);
 
             FTPClient ftpClient = new FTPClient();
             try {
-                ftpClient.connect(ClientFTP.server, ClientFTP.portNumber);
+                ftpClient.connect(ClientFTP.SERVER, ClientFTP.PORT_NUMBER);
                 ftpClient.enterLocalPassiveMode();
-                ftpClient.login(ClientFTP.user, ClientFTP.password);
+                ftpClient.login(ClientFTP.USER, ClientFTP.PASSWORD);
 
 
                 ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);// Used for video
@@ -251,11 +190,76 @@ public class SplashActivity extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("value", "Permission Granted, Now you can use local drive .");
+                    comprovarVersioIDescarregarFitxers();
                 } else {
-                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                    System.exit(0);
                 }
                 break;
+        }
+    }
+
+    private void comprovarVersioIDescarregarFitxers(){
+        // Creem o obrim el fitxer versio.txt local
+        File sdcard = Environment.getExternalStorageDirectory();
+        File versio = new File(sdcard, "versio.txt");
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(versio));
+            String line;
+
+            // Llegim el fitxer i comprovem si té contingut a la primera línia
+            if ((line = br.readLine()) != null) {
+
+                // Desem la versió del fitxer local
+                Double versioLocal = Double.parseDouble(line);
+
+                try {
+                    // Descarreguem el fitxer versió del FTP
+                    new descarregarVersio().execute();
+                    versio = new File(sdcard, "versio.txt");
+                    BufferedReader brNou = new BufferedReader(new FileReader(versio));
+                    String lineNou;
+
+                    // Llegim el fitxer i comprovem si té contingut a la primera línia
+                    if ((lineNou = brNou.readLine()) != null) {
+                        Double versioNou = Double.parseDouble(lineNou);
+
+                        // Comparem les versions dels fitxers versió (local vs descarregat FTP)
+                        int retval = Double.compare(versioNou, versioLocal);
+                        if (retval > 0){
+                            Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
+                            descarregarXML();
+                            scheduleSplashScreen();
+                        }else{
+                            Toast.makeText(getApplicationContext(), "Tens l'última versió", Toast.LENGTH_SHORT).show();
+                            scheduleSplashScreen();
+                        }
+
+                    }
+
+                    br.close();
+                } catch (FileNotFoundException ef) {
+                    // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
+                    Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
+                    new descarregarVersio().execute();
+                    descarregarXML();
+                    scheduleSplashScreen();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            br.close();
+        } catch (FileNotFoundException ef) {
+
+            // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
+            new descarregarVersio().execute();
+            descarregarXML();
+            scheduleSplashScreen();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
