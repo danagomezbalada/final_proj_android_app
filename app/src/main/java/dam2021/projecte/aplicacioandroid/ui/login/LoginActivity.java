@@ -219,14 +219,14 @@ public class LoginActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Toast.makeText(LoginActivity.this, "Usuari creat correctament",
+                            Toast.makeText(LoginActivity.this, R.string.user_create_success,
                                     Toast.LENGTH_SHORT).show();
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             startActivity(i);
 
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Error creant l'usuari",
+                            Toast.makeText(LoginActivity.this, R.string.user_create_error,
                                     Toast.LENGTH_SHORT).show();
 
                         }

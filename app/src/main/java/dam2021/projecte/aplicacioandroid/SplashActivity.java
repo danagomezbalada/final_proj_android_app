@@ -192,11 +192,11 @@ public class SplashActivity extends AppCompatActivity {
                         // Comparem les versions dels fitxers versió (local vs descarregat FTP)
                         int retval = Double.compare(versioNou, versioLocal);
                         if (retval > 0){
-                            Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_SHORT).show();
                             descarregarXML();
                             scheduleSplashScreen();
                         }else{
-                            Toast.makeText(getApplicationContext(), "Tens l'última versió", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_SHORT).show();
                             scheduleSplashScreen();
                         }
 
@@ -205,7 +205,7 @@ public class SplashActivity extends AppCompatActivity {
                     br.close();
                 } catch (FileNotFoundException ef) {
                     // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
-                    Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_SHORT).show();
                     new descarregarVersio().execute();
                     descarregarXML();
                     scheduleSplashScreen();
@@ -219,7 +219,7 @@ public class SplashActivity extends AppCompatActivity {
         } catch (FileNotFoundException ef) {
 
             // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
-            Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_SHORT).show();
             new descarregarVersio().execute();
             descarregarXML();
             scheduleSplashScreen();
