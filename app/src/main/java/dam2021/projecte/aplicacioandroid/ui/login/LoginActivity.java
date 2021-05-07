@@ -147,10 +147,6 @@ public class LoginActivity extends AppCompatActivity {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        /*Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(intent);*/
                                         Intent i = new Intent(LoginActivity.this, MainActivity.class);
                                         startActivity(i);
                                     } else {
@@ -162,9 +158,14 @@ public class LoginActivity extends AppCompatActivity {
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     switch (which){
                                                         case DialogInterface.BUTTON_POSITIVE:
-                                                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                                                            startActivity(i);
-                                                            break;
+                                                            //Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                                                            //startActivity(i);
+                                                            //break;
+
+                                                            String email = usernameEditText.getText().toString();
+                                                            String password = passwordEditText.getText().toString();
+
+                                                            crearUsuari(email, password);
 
                                                         case DialogInterface.BUTTON_NEGATIVE:
                                                             //No button clicked - No es fa res
@@ -209,4 +210,28 @@ public class LoginActivity extends AppCompatActivity {
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
+
+    private void crearUsuari(String email, String password){
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Toast.makeText(LoginActivity.this, "Usuari creat correctament",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(i);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(LoginActivity.this, "Error creant l'usuari",
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+    }
+
 }
