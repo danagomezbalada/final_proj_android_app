@@ -33,12 +33,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        //scheduleSplashScreen();
-        if (!checkPermission()){
-            requestPermission();
-        }else{
-            comprovarVersioIDescarregarFitxers();
-        }
+
+        checkVerDescFitxers();
 
     }
 
@@ -137,7 +133,7 @@ public class SplashActivity extends AppCompatActivity {
 
         try {
             FileOutputStream fitxer;
-            File sdcard = Environment.getExternalStorageDirectory();
+            File sdcard = getFilesDir();
             File targetFile = new File(sdcard, nomFitxer);
 
             FTPClient ftpClient = new FTPClient();
@@ -166,41 +162,10 @@ public class SplashActivity extends AppCompatActivity {
         return false;
     }
 
-    // Funció que comprova si tenim permisos d'escriptura
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // Funció per demanar permisos d'escriptura
-    private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(this, "Write External Storage permission allows us to save files. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    comprovarVersioIDescarregarFitxers();
-                } else {
-                    System.exit(0);
-                }
-                break;
-        }
-    }
-
-    private void comprovarVersioIDescarregarFitxers(){
+    // Funció que comprova la versió i es descarrega els fitxers del FTP
+    private void checkVerDescFitxers(){
         // Creem o obrim el fitxer versio.txt local
-        File sdcard = Environment.getExternalStorageDirectory();
+        File sdcard = getFilesDir();
         File versio = new File(sdcard, "versio.txt");
 
         try {
@@ -254,6 +219,7 @@ public class SplashActivity extends AppCompatActivity {
         } catch (FileNotFoundException ef) {
 
             // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
+            Toast.makeText(getApplicationContext(), "Hi ha una nova versió disponible, descarregant actualitzacions", Toast.LENGTH_SHORT).show();
             new descarregarVersio().execute();
             descarregarXML();
             scheduleSplashScreen();
