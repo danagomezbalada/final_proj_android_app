@@ -77,7 +77,7 @@ public class EsdevenimentFragment extends Fragment {
     private void afegirEsdeveniments(SQLiteDatabase baseDades) {
 
 
-        String query = "SELECT id, any, nom, descripcio, actiu FROM esdeveniment";
+        String query = "SELECT id, any, nom, descripcio, actiu FROM esdeveniment WHERE actiu = 'true'";
         Cursor resultat = baseDades.rawQuery(query, null);
 
         if (resultat == null)

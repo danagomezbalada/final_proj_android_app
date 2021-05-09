@@ -23,6 +23,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import dam2021.projecte.aplicacioandroid.ui.cercar.Categoria;
+import dam2021.projecte.aplicacioandroid.ui.cercar.CategoriaXML;
 import dam2021.projecte.aplicacioandroid.ui.ftp.ClientFTP;
 import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
 import dam2021.projecte.aplicacioandroid.ui.home.EsdevenimentXML;
@@ -97,7 +99,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Long result) {
-
+            carregarCategoriesXMLaBD();
         }
     }
 
@@ -130,7 +132,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     // Funció que executa la descàrrega de tots els XML
-    private void descarregarXML(){
+    private void descarregarXML() {
 
         String queryEsd = "DELETE FROM esdeveniment";
         String queryCat = "DELETE FROM categoria";
@@ -183,7 +185,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     // Funció que comprova la versió i es descarrega els fitxers del FTP
-    private void checkVerDescFitxers(){
+    private void checkVerDescFitxers() {
         // Creem o obrim el fitxer versio.txt local
         File directori = getFilesDir();
         File versio = new File(directori, "versio.txt");
@@ -211,11 +213,11 @@ public class SplashActivity extends AppCompatActivity {
 
                         // Comparem les versions dels fitxers versió (local vs descarregat FTP)
                         int retval = Double.compare(versioNou, versioLocal);
-                        if (retval > 0){
+                        if (retval > 0) {
                             Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_SHORT).show();
                             descarregarXML();
                             scheduleSplashScreen();
-                        }else{
+                        } else {
                             Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_SHORT).show();
                             descarregarXML();
                             scheduleSplashScreen();
@@ -256,30 +258,30 @@ public class SplashActivity extends AppCompatActivity {
         try {
             esdevenimentXML = ser.read(EsdevenimentXML.class, esdevenimentsFitxer);
 
-            ArrayList<Esdeveniment> esdeveniments = (ArrayList<Esdeveniment>) esdevenimentXML.getEsdeveniments();
+            ArrayList<Esdeveniment> esdeveniments = esdevenimentXML.getEsdeveniments();
             int errCount = 0;
 
-            for(int i = 0; i<esdeveniments.size(); i++){
+            for (int i = 0; i < esdeveniments.size(); i++) {
                 Esdeveniment aux = esdeveniments.get(i);
 
                 String sqlQuery = "INSERT INTO esdeveniment (id, any, nom, descripcio, actiu) " +
-                        "VALUES ('"+aux.getId()+"', '"+aux.getAny()+"', '"+aux.getNom()+
-                        "', '"+aux.getDescripcio()+"', '"+aux.isActiu()+"');";
+                        "VALUES ('" + aux.getId() + "', '" + aux.getAny() + "', '" + aux.getNom() +
+                        "', '" + aux.getDescripcio() + "', '" + aux.isActiu() + "');";
 
                 // Executem la consulta i mostrem un missatge d'estat OK o un missatge d'error
                 try {
                     baseDades.execSQL(sqlQuery);
-                }catch (SQLException e){
-                    if (e.getMessage().contains("UNIQUE")){
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("UNIQUE")) {
                         errCount++;
                     }
                 }
             }
 
-            if (errCount > 0){
+            if (errCount > 0) {
                 Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(this, "XML afegit correctament", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "XML Esdeveniments afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -293,35 +295,34 @@ public class SplashActivity extends AppCompatActivity {
         File categoriesFitxer = new File(directori, "categories.xml");
 
         Serializer ser = new Persister();
-        EsdevenimentXML esdevenimentXML = null;
+        CategoriaXML categoriaXML = null;
 
         try {
-            esdevenimentXML = ser.read(EsdevenimentXML.class, categoriesFitxer);
+            categoriaXML = ser.read(CategoriaXML.class, categoriesFitxer);
 
-            ArrayList<Esdeveniment> esdeveniments = (ArrayList<Esdeveniment>) esdevenimentXML.getEsdeveniments();
+            ArrayList<Categoria> categories = categoriaXML.getCategories();
             int errCount = 0;
 
-            for(int i = 0; i<esdeveniments.size(); i++){
-                Esdeveniment aux = esdeveniments.get(i);
+            for (int i = 0; i < categories.size(); i++) {
+                Categoria aux = categories.get(i);
 
-                String sqlQuery = "INSERT INTO esdeveniment (id, any, nom, descripcio, actiu) " +
-                        "VALUES ('"+aux.getId()+"', '"+aux.getAny()+"', '"+aux.getNom()+
-                        "', '"+aux.getDescripcio()+"', '"+aux.isActiu()+"');";
+                String sqlQuery = "INSERT INTO categoria (id, nom) " +
+                        "VALUES ('" + aux.getId() + "', '" + aux.getNom() + "');";
 
                 // Executem la consulta i mostrem un missatge d'estat OK o un missatge d'error
                 try {
                     baseDades.execSQL(sqlQuery);
-                }catch (SQLException e){
-                    if (e.getMessage().contains("UNIQUE")){
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("UNIQUE")) {
                         errCount++;
                     }
                 }
             }
 
-            if (errCount > 0){
+            if (errCount > 0) {
                 Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
-            }else{
-                Toast.makeText(this, "XML afegit correctament", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "XML Categories afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();

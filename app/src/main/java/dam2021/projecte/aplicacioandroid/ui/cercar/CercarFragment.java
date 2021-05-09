@@ -1,5 +1,7 @@
 package dam2021.projecte.aplicacioandroid.ui.cercar;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +14,29 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dam2021.projecte.aplicacioandroid.DBMS;
 import dam2021.projecte.aplicacioandroid.R;
+import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
 
 public class CercarFragment extends Fragment {
 
     private CercarViewModel cercarViewModel;
     private Bundle data;
+    private SQLiteDatabase baseDades;
+    private List<Categoria> categories = new ArrayList<>();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        DBMS db = DBMS.getInstance(getActivity());
+        this.baseDades = db.getWritableDatabase();
+        afegirCategories(baseDades);
+
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -28,8 +47,8 @@ public class CercarFragment extends Fragment {
 
         Spinner spinner = view.findViewById(R.id.spinner);
         //TODO: canviar tipus de spinner per obtenir valors de BBDD encomptes de fitxer
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(view.getContext(),
-                R.array.test_array, R.layout.spinner_layout);
+        ArrayAdapter<Categoria> adapter = new ArrayAdapter<Categoria>(getContext(),
+                R.layout.spinner_layout, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -42,5 +61,26 @@ public class CercarFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void afegirCategories(SQLiteDatabase baseDades) {
+
+
+        String query = "SELECT id, nom FROM categoria";
+        Cursor resultat = baseDades.rawQuery(query, null);
+
+        if (resultat == null)
+            return;
+
+        // Si la consulta ha obtingut resultats, anem afegint aquests a l'ArrayList
+        try {
+            while (resultat.moveToNext()){
+                categories.add(new Categoria(resultat.getInt(0), resultat.getString(1)));
+            }
+        }
+        finally {
+            // Tanquem el cursor un cop hem acabat
+            resultat.close();
+        }
     }
 }
