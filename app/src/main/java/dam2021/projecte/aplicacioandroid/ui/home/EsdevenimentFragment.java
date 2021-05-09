@@ -1,6 +1,8 @@
 package dam2021.projecte.aplicacioandroid.ui.home;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,25 +16,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import dam2021.projecte.aplicacioandroid.DBMS;
 import dam2021.projecte.aplicacioandroid.R;
+import dam2021.projecte.aplicacioandroid.SplashActivity;
 import dam2021.projecte.aplicacioandroid.ui.home.dummy.DummyContent;
 
-/**
- * A fragment representing a list of Items.
- */
+import static android.content.Context.MODE_PRIVATE;
+
 public class EsdevenimentFragment extends Fragment {
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
     private int mColumnCount = 1;
 
-    private Bundle data;
+    private SQLiteDatabase baseDades;
+    private List<Esdeveniments> esdeveniments = new ArrayList<>();
 
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
+
     public EsdevenimentFragment() {
     }
 
@@ -53,6 +55,10 @@ public class EsdevenimentFragment extends Fragment {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+        DBMS db = DBMS.getInstance(SplashActivity.getContext());
+        this.baseDades = db.getWritableDatabase();
+        afegirEsdeveniments(baseDades);
+
     }
 
     @Override
@@ -69,8 +75,30 @@ public class EsdevenimentFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyEsdevenimentRecyclerViewAdapter(DummyContent.ITEMS));
+            recyclerView.setAdapter(new MyEsdevenimentRecyclerViewAdapter(esdeveniments));
         }
         return view;
+    }
+
+    private void afegirEsdeveniments(SQLiteDatabase baseDades) {
+
+
+        String query = "SELECT id, any, nom, descripcio, actiu FROM esdeveniment";
+        Cursor resultat = baseDades.rawQuery(query, null);
+
+        if (resultat == null)
+            return;
+
+        // Si la consulta ha obtingut resultats, anem afegint aquests a l'ArrayList
+        try {
+            while (resultat.moveToNext()){
+                esdeveniments.add(new Esdeveniments(resultat.getInt(0), resultat.getInt(1),
+                        resultat.getString(2), resultat.getString(3), resultat.getString(4)));
+            }
+        }
+        finally {
+            // Tanquem el cursor un cop hem acabat
+            resultat.close();
+        }
     }
 }

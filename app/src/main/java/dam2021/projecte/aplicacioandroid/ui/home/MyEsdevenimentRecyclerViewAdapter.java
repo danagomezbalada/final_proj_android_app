@@ -24,17 +24,13 @@ import java.util.List;
 import dam2021.projecte.aplicacioandroid.R;
 import dam2021.projecte.aplicacioandroid.ui.login.LoginActivity;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEsdevenimentRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Esdeveniments> llistaEsdeveniments;
     private Bundle data;
 
-    public MyEsdevenimentRecyclerViewAdapter(List<DummyItem> items) {
-        mValues = items;
+    public MyEsdevenimentRecyclerViewAdapter(List<Esdeveniments> items) {
+        llistaEsdeveniments = items;
     }
 
     @Override
@@ -47,12 +43,12 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mNomView.setText(mValues.get(position).id);
+        holder.mItem = llistaEsdeveniments.get(position);
+        holder.mNomView.setText(llistaEsdeveniments.get(position).getNom());
 
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
-            data.putString("id", "nom");
+            data.putInt("id", llistaEsdeveniments.get(position).getId());
             Navigation.findNavController(v)
                     .navigate(R.id.action_navigation_home_to_activitatFragment, data);
 
@@ -61,13 +57,13 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return llistaEsdeveniments.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mNomView;
-        public DummyItem mItem;
+        public Esdeveniments mItem;
         public final CardView mCard;
 
         public ViewHolder(View view) {

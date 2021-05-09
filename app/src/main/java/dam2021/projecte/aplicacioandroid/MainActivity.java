@@ -11,7 +11,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.ArrayList;
+
+import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniments;
+
 public class MainActivity extends AppCompatActivity {
+
+    ArrayList<Esdeveniments> esdeveniments = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
