@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="dam2021.projecte.aplicacioandroid.ui.home.EsdevenimentFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_home_top"
         tools:layout="@layout/fragment_esdeveniment">
         <action
             android:id="@+id/action_navigation_home_to_activitatFragment"

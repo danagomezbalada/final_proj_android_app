@@ -16,6 +16,7 @@
 
     <!-- Other -->
     <string name="title_home">Inici</string>
+    <string name="title_home_top">Inici - Esdeveniments</string>
     <string name="title_dashboard">Cercar</string>
     <string name="title_notifications">Reserves</string>
     <string name="button_obrir">Obrir</string>

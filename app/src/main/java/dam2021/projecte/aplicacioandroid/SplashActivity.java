@@ -21,20 +21,28 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import dam2021.projecte.aplicacioandroid.ui.activitats.Activitat;
+import dam2021.projecte.aplicacioandroid.ui.activitats.ActivitatXML;
 import dam2021.projecte.aplicacioandroid.ui.cercar.Categoria;
 import dam2021.projecte.aplicacioandroid.ui.cercar.CategoriaXML;
 import dam2021.projecte.aplicacioandroid.ui.ftp.ClientFTP;
 import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
 import dam2021.projecte.aplicacioandroid.ui.home.EsdevenimentXML;
 import dam2021.projecte.aplicacioandroid.ui.login.LoginActivity;
+import dam2021.projecte.aplicacioandroid.ui.reserves.Reserva;
+import dam2021.projecte.aplicacioandroid.ui.reserves.ReservaXML;
 
 public class SplashActivity extends AppCompatActivity {
 
     public SQLiteDatabase baseDades;
     private static Context mContext;
-    private static final int PERMISSION_REQUEST_CODE = 100;
+    private String pattern = "yyyy-MM-dd";
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +121,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Long result) {
-
+            carregarActivitatsXMLaBD();
         }
     }
 
@@ -127,7 +135,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Long result) {
-
+            carregarReservesXMLaBD();
         }
     }
 
@@ -265,10 +273,10 @@ public class SplashActivity extends AppCompatActivity {
                 Esdeveniment aux = esdeveniments.get(i);
 
                 String sqlQuery = "INSERT INTO esdeveniment (id, any, nom, descripcio, actiu) " +
-                        "VALUES ('" + aux.getId() + "', '" + aux.getAny() + "', '" + aux.getNom() +
-                        "', '" + aux.getDescripcio() + "', '" + aux.isActiu() + "');";
+                        "VALUES (\"" + aux.getId() + "\", \"" + aux.getAny() + "\", \"" + aux.getNom() +
+                        "\", \"" + aux.getDescripcio() + "\", \"" + aux.isActiu() + "\");";
 
-                // Executem la consulta i mostrem un missatge d'estat OK o un missatge d'error
+                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
                 try {
                     baseDades.execSQL(sqlQuery);
                 } catch (SQLException e) {
@@ -307,9 +315,9 @@ public class SplashActivity extends AppCompatActivity {
                 Categoria aux = categories.get(i);
 
                 String sqlQuery = "INSERT INTO categoria (id, nom) " +
-                        "VALUES ('" + aux.getId() + "', '" + aux.getNom() + "');";
+                        "VALUES (\"" + aux.getId() + "\", \"" + aux.getNom() + "\");";
 
-                // Executem la consulta i mostrem un missatge d'estat OK o un missatge d'error
+                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
                 try {
                     baseDades.execSQL(sqlQuery);
                 } catch (SQLException e) {
@@ -323,6 +331,96 @@ public class SplashActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "XML Categories afegit correctament", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Funció que llegeix les activitats del fitxer XML i les afegeix a la BD
+    private void carregarActivitatsXMLaBD() {
+
+        File directori = getFilesDir();
+        File activitatsFitxer = new File(directori, "activitats.xml");
+
+        Serializer ser = new Persister();
+        ActivitatXML activitatXML = null;
+
+        try {
+            activitatXML = ser.read(ActivitatXML.class, activitatsFitxer);
+
+            ArrayList<Activitat> activitats = activitatXML.getActivitats();
+            int errCount = 0;
+
+            for (int i = 0; i < activitats.size(); i++) {
+                Activitat aux = activitats.get(i);
+
+                String data = simpleDateFormat.format(aux.getData());
+                String dataIniciMostra = simpleDateFormat.format(aux.getDataIniciMostra());
+                String dataFiMostra = simpleDateFormat.format(aux.getDataFiMostra());
+
+                String sqlQuery = "INSERT INTO activitat (id, titol, data, ubicacio, descripcio, departament, ponent, preu, places_totals, places_actuals, id_esdeveniment, data_inici_mostra, data_fi_mostra) " +
+                        "VALUES (\"" + aux.getId() + "\", \"" + aux.getTitol() + "\", \"" + data + "\", \"" + aux.getUbicacio() + "\", \"" + aux.getDescripcio() + "\", \"" + aux.getDepartament() + "\", \"" +
+                        aux.getPonent() + "\", \"" + aux.getPreu() + "\", \"" + aux.getPlacesTotals() + "\", \"" + aux.getPlacesActuals() + "\", \"" + aux.getIdEsdeveniment() + "\", \"" + dataIniciMostra +
+                        "\", \"" + dataFiMostra + "\");";
+
+                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                try {
+                    baseDades.execSQL(sqlQuery);
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("UNIQUE")) {
+                        errCount++;
+                    }
+                }
+            }
+
+            if (errCount > 0) {
+                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "XML Activitats afegit correctament", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Funció que llegeix les reserves del fitxer XML i les afegeix a la BD
+    private void carregarReservesXMLaBD() {
+
+        File directori = getFilesDir();
+        File reservesFitxer = new File(directori, "reserves.xml");
+
+        Serializer ser = new Persister();
+        ReservaXML reservaXML = null;
+
+        try {
+            reservaXML = ser.read(ReservaXML.class, reservesFitxer);
+
+            ArrayList<Reserva> reserves = reservaXML.getReserves();
+            int errCount = 0;
+
+            for (int i = 0; i < reserves.size(); i++) {
+                Reserva aux = reserves.get(i);
+
+                String data = simpleDateFormat.format(aux.getData());
+
+                String sqlQuery = "INSERT INTO reserva (id, email, id_activitat, data, codi_transaccio, estat) " +
+                        "VALUES (\"" + aux.getId() + "\", \"" + aux.getEmail() + "\", \"" + aux.getIdActivitat() + "\", \"" + data + "\", \"" + aux.getCodiTransaccio() + "\", \"" + aux.getEstat() + "\");";
+
+                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                try {
+                    baseDades.execSQL(sqlQuery);
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("UNIQUE")) {
+                        errCount++;
+                    }
+                }
+            }
+
+            if (errCount > 0) {
+                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "XML Reserves afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();

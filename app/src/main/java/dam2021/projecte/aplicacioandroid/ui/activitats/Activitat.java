@@ -3,7 +3,7 @@ package dam2021.projecte.aplicacioandroid.ui.activitats;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Root(name = "activitat")
 public class Activitat {
@@ -20,7 +20,7 @@ public class Activitat {
     private String descripcio;
     @Element(name = "departament")
     private String departament;
-    @Element(name = "ponent")
+    @Element(name = "ponents", required = false)
     private String ponent;
     @Element(name = "preu")
     private Double preu;
