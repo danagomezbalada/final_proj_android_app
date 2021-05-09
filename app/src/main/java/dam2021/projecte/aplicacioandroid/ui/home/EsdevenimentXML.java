@@ -6,16 +6,16 @@ import org.simpleframework.xml.Root;
 import java.util.ArrayList;
 
 @Root(name = "esdeveniments")
-public class EsdevenimentsXML {
+public class EsdevenimentXML {
 
     @ElementList(required = true, inline = true)
-    private ArrayList<Esdeveniments> esdeveniments;
+    private ArrayList<Esdeveniment> esdeveniments;
 
-    public EsdevenimentsXML() {
-        this.esdeveniments = new ArrayList<Esdeveniments>();
+    public EsdevenimentXML() {
+        this.esdeveniments = new ArrayList<>();
     }
 
-    public ArrayList<Esdeveniments> getEsdeveniments() {
+    public ArrayList<Esdeveniment> getEsdeveniments() {
         return esdeveniments;
     }
 

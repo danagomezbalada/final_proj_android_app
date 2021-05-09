@@ -1,20 +1,14 @@
 package dam2021.projecte.aplicacioandroid;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.Toast;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -27,12 +21,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import dam2021.projecte.aplicacioandroid.ui.ftp.ClientFTP;
-import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniments;
-import dam2021.projecte.aplicacioandroid.ui.home.EsdevenimentsXML;
+import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
+import dam2021.projecte.aplicacioandroid.ui.home.EsdevenimentXML;
 import dam2021.projecte.aplicacioandroid.ui.login.LoginActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -47,7 +40,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         mContext = this;
 
-        DBMS db = DBMS.getInstance(SplashActivity.getContext());
+        DBMS db = DBMS.getInstance(this);
         this.baseDades = db.getWritableDatabase();
 
         checkVerDescFitxers();
@@ -139,8 +132,14 @@ public class SplashActivity extends AppCompatActivity {
     // Funció que executa la descàrrega de tots els XML
     private void descarregarXML(){
 
-        String query = "DELETE FROM esdeveniment";
-        baseDades.execSQL(query);
+        String queryEsd = "DELETE FROM esdeveniment";
+        String queryCat = "DELETE FROM categoria";
+        String queryAct = "DELETE FROM activitat";
+        String queryRes = "DELETE FROM reserva";
+        baseDades.execSQL(queryEsd);
+        baseDades.execSQL(queryCat);
+        baseDades.execSQL(queryAct);
+        baseDades.execSQL(queryRes);
 
         new descarregarEsdeveniments().execute();
         new descarregarCategories().execute();
@@ -252,16 +251,16 @@ public class SplashActivity extends AppCompatActivity {
         File esdevenimentsFitxer = new File(directori, "esdeveniments.xml");
 
         Serializer ser = new Persister();
-        EsdevenimentsXML esdevenimentsXML = null;
+        EsdevenimentXML esdevenimentXML = null;
 
         try {
-            esdevenimentsXML = ser.read(EsdevenimentsXML.class, esdevenimentsFitxer);
+            esdevenimentXML = ser.read(EsdevenimentXML.class, esdevenimentsFitxer);
 
-            ArrayList<Esdeveniments> esdeveniments = (ArrayList<Esdeveniments>) esdevenimentsXML.getEsdeveniments();
+            ArrayList<Esdeveniment> esdeveniments = (ArrayList<Esdeveniment>) esdevenimentXML.getEsdeveniments();
             int errCount = 0;
 
             for(int i = 0; i<esdeveniments.size(); i++){
-                Esdeveniments aux = esdeveniments.get(i);
+                Esdeveniment aux = esdeveniments.get(i);
 
                 String sqlQuery = "INSERT INTO esdeveniment (id, any, nom, descripcio, actiu) " +
                         "VALUES ('"+aux.getId()+"', '"+aux.getAny()+"', '"+aux.getNom()+
@@ -287,8 +286,45 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-    public static Context getContext(){
-        return mContext;
-    }
+    // Funció que llegeix les categories del fitxer XML i les afegeix a la BD
+    private void carregarCategoriesXMLaBD() {
 
+        File directori = getFilesDir();
+        File categoriesFitxer = new File(directori, "categories.xml");
+
+        Serializer ser = new Persister();
+        EsdevenimentXML esdevenimentXML = null;
+
+        try {
+            esdevenimentXML = ser.read(EsdevenimentXML.class, categoriesFitxer);
+
+            ArrayList<Esdeveniment> esdeveniments = (ArrayList<Esdeveniment>) esdevenimentXML.getEsdeveniments();
+            int errCount = 0;
+
+            for(int i = 0; i<esdeveniments.size(); i++){
+                Esdeveniment aux = esdeveniments.get(i);
+
+                String sqlQuery = "INSERT INTO esdeveniment (id, any, nom, descripcio, actiu) " +
+                        "VALUES ('"+aux.getId()+"', '"+aux.getAny()+"', '"+aux.getNom()+
+                        "', '"+aux.getDescripcio()+"', '"+aux.isActiu()+"');";
+
+                // Executem la consulta i mostrem un missatge d'estat OK o un missatge d'error
+                try {
+                    baseDades.execSQL(sqlQuery);
+                }catch (SQLException e){
+                    if (e.getMessage().contains("UNIQUE")){
+                        errCount++;
+                    }
+                }
+            }
+
+            if (errCount > 0){
+                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
+            }else{
+                Toast.makeText(this, "XML afegit correctament", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

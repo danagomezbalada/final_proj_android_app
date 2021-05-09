@@ -13,11 +13,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import java.util.ArrayList;
 
-import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniments;
+import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
 
 public class MainActivity extends AppCompatActivity {
 
-    ArrayList<Esdeveniments> esdeveniments = null;
+    ArrayList<Esdeveniment> esdeveniments = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -4,7 +4,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 @Root(name = "esdeveniment")
-public class Esdeveniments {
+public class Esdeveniment {
 
     @Element(name = "id")
     private int id;
@@ -17,10 +17,10 @@ public class Esdeveniments {
     @Element(name = "actiu")
     private String actiu;
 
-    public Esdeveniments() {
+    public Esdeveniment() {
     }
 
-    public Esdeveniments(int id, int any, String nom, String descripcio, String actiu) {
+    public Esdeveniment(int id, int any, String nom, String descripcio, String actiu) {
         this.id = id;
         this.any = any;
         this.nom = nom;
