@@ -11,8 +11,12 @@
     <string name="login_failed">"Login fallit"</string>
     <string name="username_notExists_title">Usuari inexistent</string>
     <string name="username_notExists">L\'usuari no existeix, vols crear-lo?</string>
+    <string name="user_create_success">Usuari creat correctament</string>
+    <string name="user_create_error">Error creant l\'usuari</string>
+
     <!-- Other -->
     <string name="title_home">Inici</string>
+    <string name="title_home_top">Inici - Esdeveniments</string>
     <string name="title_dashboard">Cercar</string>
     <string name="title_notifications">Reserves</string>
     <string name="button_obrir">Obrir</string>
@@ -22,4 +26,8 @@
     <string name="no">No</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- SplashActivity -->
+    <string name="new_version_available">Hi ha una nova versió disponible, descarregant actualitzacions</string>
+    <string name="already_last_version">Tens l\'última versió</string>
 </resources>

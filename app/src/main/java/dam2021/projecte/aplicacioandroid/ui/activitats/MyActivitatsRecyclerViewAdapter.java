@@ -16,19 +16,19 @@ import dam2021.projecte.aplicacioandroid.R;
 
 import dam2021.projecte.aplicacioandroid.ui.activitats.dummy.DummyContent.DummyItem;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
- * TODO: Replace the implementation with code for your data type.
- */
+
 public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActivitatsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Activitat> llistaActivitats;
     private Bundle data;
+    String pattern = "dd-MM-yyyy";
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
-    public MyActivitatsRecyclerViewAdapter(List<DummyItem> items) {
-        mValues = items;
+    public MyActivitatsRecyclerViewAdapter(List<Activitat> items) {
+        llistaActivitats = items;
     }
 
     @Override
@@ -41,14 +41,16 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mItem = llistaActivitats.get(position);
+        String dataActivitat = simpleDateFormat.format(llistaActivitats.get(position).getData());
+        holder.mDataView.setText(llistaActivitats.get(position).getTitol() + "\n" + dataActivitat);
+
+        //holder.mDataView.setText(dataActivitat);
 
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
-            String nom = ((TextView) v.findViewById(R.id.details)).getText().toString();
-            data.putString("id", nom);
+            int id = llistaActivitats.get(position).getId();
+            data.putInt("id", id);
             Navigation.findNavController(v)
                     .navigate(R.id.action_navigation_activitatFragment_to_activitatDetallFragment, data);
 
@@ -57,28 +59,20 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
 
     @Override
     public int getItemCount() {
-        return mValues.size();
+        return llistaActivitats.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView mDataView;
+        public Activitat mItem;
         public final CardView mCard;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = view.findViewById(R.id.item_number);
-            mContentView = view.findViewById(R.id.content);
+            mDataView = view.findViewById(R.id.data);
             mCard = view.findViewById(R.id.card);
-        }
-
-        @Override
-        @NonNull
-        public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
         }
     }
 }
