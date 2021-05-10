@@ -35,6 +35,8 @@ public class ActivitatsFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 2;
 
+    Bundle b;
+
     private SQLiteDatabase baseDades;
     private List<Activitat> activitats = new ArrayList<>();
 
@@ -88,8 +90,19 @@ public class ActivitatsFragment extends Fragment {
 
     private void afegirActivitats(SQLiteDatabase baseDades) {
 
+        b = getArguments();
 
-        String query = "SELECT id, titol, data FROM activitat";
+        Integer idEsdeveniment = b.getInt("idEsdeveniment");
+        Integer idCategoria = b.getInt("idCategoria");
+
+        String query = "";
+
+        if (idEsdeveniment > 0){
+            query = "SELECT id, titol, data FROM activitat WHERE id_esdeveniment = "+ idEsdeveniment +" AND date('now') BETWEEN data_inici_mostra AND data_fi_mostra ;";
+        }else if(idCategoria > 0){
+            query = "SELECT a.id, a.titol, a.data, a.data_inici_mostra, a.data_fi_mostra FROM activitat_categoria ap JOIN activitat a ON ap.id_activitat = a.id WHERE ap.id_categoria = " + idCategoria + " AND date('now') BETWEEN a.data_inici_mostra AND a.data_fi_mostra ;";
+        }
+
         Cursor resultat = baseDades.rawQuery(query, null);
 
         if (resultat == null)

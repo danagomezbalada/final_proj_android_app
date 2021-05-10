@@ -46,16 +46,15 @@ public class CercarFragment extends Fragment {
 
 
         Spinner spinner = view.findViewById(R.id.spinner);
-        //TODO: canviar tipus de spinner per obtenir valors de BBDD encomptes de fitxer
         ArrayAdapter<Categoria> adapter = new ArrayAdapter<Categoria>(getContext(),
                 R.layout.spinner_layout, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
         view.findViewById(R.id.botoCerca).setOnClickListener(view1 -> {
-            String test = spinner.getSelectedItem().toString();
+            Categoria categoria = (Categoria) spinner.getSelectedItem();
             data = new Bundle();
-            data.putString("id", test);
+            data.putInt("idCategoria", categoria.getId());
             Navigation.findNavController(view1)
                     .navigate(R.id.action_navigation_cercarFragment_to_activitatFragment, data);
         });

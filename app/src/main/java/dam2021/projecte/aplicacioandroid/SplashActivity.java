@@ -290,7 +290,6 @@ public class SplashActivity extends AppCompatActivity {
             esdevenimentXML = ser.read(EsdevenimentXML.class, esdevenimentsFitxer);
 
             ArrayList<Esdeveniment> esdeveniments = esdevenimentXML.getEsdeveniments();
-            int errCount = 0;
 
             for (int i = 0; i < esdeveniments.size(); i++) {
                 Esdeveniment aux = esdeveniments.get(i);
@@ -299,20 +298,12 @@ public class SplashActivity extends AppCompatActivity {
                         "VALUES (\"" + aux.getId() + "\", \"" + aux.getAny() + "\", \"" + aux.getNom() +
                         "\", \"" + aux.getDescripcio() + "\", \"" + aux.isActiu() + "\");";
 
-                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                // Executem la consulta
                 try {
                     baseDades.execSQL(sqlQuery);
                 } catch (SQLException e) {
-                    if (e.getMessage().contains("UNIQUE")) {
-                        errCount++;
-                    }
+                    e.printStackTrace();
                 }
-            }
-
-            if (errCount > 0) {
-                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "XML Esdeveniments afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -340,20 +331,12 @@ public class SplashActivity extends AppCompatActivity {
                 String sqlQuery = "INSERT INTO categoria (id, nom) " +
                         "VALUES (\"" + aux.getId() + "\", \"" + aux.getNom() + "\");";
 
-                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                // Executem la consulta
                 try {
                     baseDades.execSQL(sqlQuery);
                 } catch (SQLException e) {
-                    if (e.getMessage().contains("UNIQUE")) {
-                        errCount++;
-                    }
+                    e.printStackTrace();
                 }
-            }
-
-            if (errCount > 0) {
-                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "XML Categories afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -373,7 +356,6 @@ public class SplashActivity extends AppCompatActivity {
             activitatXML = ser.read(ActivitatXML.class, activitatsFitxer);
 
             ArrayList<Activitat> activitats = activitatXML.getActivitats();
-            int errCount = 0;
 
             for (int i = 0; i < activitats.size(); i++) {
                 Activitat aux = activitats.get(i);
@@ -387,20 +369,12 @@ public class SplashActivity extends AppCompatActivity {
                         aux.getPonent() + "\", \"" + aux.getPreu() + "\", \"" + aux.getPlacesTotals() + "\", \"" + aux.getPlacesActuals() + "\", \"" + aux.getIdEsdeveniment() + "\", \"" + dataIniciMostra +
                         "\", \"" + dataFiMostra + "\");";
 
-                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                // Executem la consulta
                 try {
                     baseDades.execSQL(sqlQuery);
                 } catch (SQLException e) {
-                    if (e.getMessage().contains("UNIQUE")) {
-                        errCount++;
-                    }
+                    e.printStackTrace();
                 }
-            }
-
-            if (errCount > 0) {
-                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "XML Activitats afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -420,7 +394,6 @@ public class SplashActivity extends AppCompatActivity {
             reservaXML = ser.read(ReservaXML.class, reservesFitxer);
 
             ArrayList<Reserva> reserves = reservaXML.getReserves();
-            int errCount = 0;
 
             for (int i = 0; i < reserves.size(); i++) {
                 Reserva aux = reserves.get(i);
@@ -430,20 +403,12 @@ public class SplashActivity extends AppCompatActivity {
                 String sqlQuery = "INSERT INTO reserva (id, email, id_activitat, data, codi_transaccio, estat) " +
                         "VALUES (\"" + aux.getId() + "\", \"" + aux.getEmail() + "\", \"" + aux.getIdActivitat() + "\", \"" + data + "\", \"" + aux.getCodiTransaccio() + "\", \"" + aux.getEstat() + "\");";
 
-                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                // Executem la consulta
                 try {
                     baseDades.execSQL(sqlQuery);
                 } catch (SQLException e) {
-                    if (e.getMessage().contains("UNIQUE")) {
-                        errCount++;
-                    }
+                    e.printStackTrace();
                 }
-            }
-
-            if (errCount > 0) {
-                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "XML Reserves afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -463,7 +428,6 @@ public class SplashActivity extends AppCompatActivity {
             activitatCategoriaXML = ser.read(ActivitatCategoriaXML.class, activitatCategoriaFitxer);
 
             ArrayList<ActivitatCategoria> activitatCategories = activitatCategoriaXML.getActivitatCategories();
-            int errCount = 0;
 
             for (int i = 0; i < activitatCategories.size(); i++) {
                 ActivitatCategoria aux = activitatCategories.get(i);
@@ -471,21 +435,14 @@ public class SplashActivity extends AppCompatActivity {
                 String sqlQuery = "INSERT INTO activitat_categoria (id_activitat, id_categoria) " +
                         "VALUES (" + aux.getIdActivitat() + ", " + aux.getIdCategoria() + ");";
 
-                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                // Executem la consulta
                 try {
                     baseDades.execSQL(sqlQuery);
                 } catch (SQLException e) {
-                    if (e.getMessage().contains("UNIQUE")) {
-                        errCount++;
-                    }
+                    e.printStackTrace();
                 }
             }
 
-            if (errCount > 0) {
-                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "XML ActivitatCategoria afegit correctament", Toast.LENGTH_LONG).show();
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
