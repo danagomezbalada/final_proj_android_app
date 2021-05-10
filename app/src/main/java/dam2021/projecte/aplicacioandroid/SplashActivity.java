@@ -28,6 +28,8 @@ import java.util.ArrayList;
 
 import dam2021.projecte.aplicacioandroid.ui.activitats.Activitat;
 import dam2021.projecte.aplicacioandroid.ui.activitats.ActivitatXML;
+import dam2021.projecte.aplicacioandroid.ui.cercar.ActivitatCategoria;
+import dam2021.projecte.aplicacioandroid.ui.cercar.ActivitatCategoriaXML;
 import dam2021.projecte.aplicacioandroid.ui.cercar.Categoria;
 import dam2021.projecte.aplicacioandroid.ui.cercar.CategoriaXML;
 import dam2021.projecte.aplicacioandroid.ui.ftp.ClientFTP;
@@ -97,6 +99,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Long result) {
             carregarEsdevenimentsXMLaBD();
+            new descarregarCategories().execute();
         }
     }
 
@@ -111,6 +114,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Long result) {
             carregarCategoriesXMLaBD();
+            new descarregarActivitats().execute();
         }
     }
 
@@ -125,6 +129,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Long result) {
             carregarActivitatsXMLaBD();
+            new descarregarReserves().execute();
         }
     }
 
@@ -139,6 +144,22 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Long result) {
             carregarReservesXMLaBD();
+            new descarregarActivitatCategoria().execute();
+        }
+    }
+
+    // Classe que descarrega les reserves amb asincronía
+    private class descarregarActivitatCategoria extends AsyncTask<Void, Integer, Long> {
+        @Override
+        protected Long doInBackground(Void... voids) {
+            establirFTP(ClientFTP.ACTIVITAT_CATEGORIA);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Long result) {
+            carregarActivitatCategoriaXMLaBD();
+            scheduleSplashScreen();
         }
     }
 
@@ -149,15 +170,14 @@ public class SplashActivity extends AppCompatActivity {
         String queryCat = "DELETE FROM categoria";
         String queryAct = "DELETE FROM activitat";
         String queryRes = "DELETE FROM reserva";
+        String queryActCat = "DELETE FROM activitat_categoria";
         baseDades.execSQL(queryEsd);
         baseDades.execSQL(queryCat);
         baseDades.execSQL(queryAct);
         baseDades.execSQL(queryRes);
+        baseDades.execSQL(queryActCat);
 
         new descarregarEsdeveniments().execute();
-        new descarregarCategories().execute();
-        new descarregarActivitats().execute();
-        new descarregarReserves().execute();
 
     }
 
@@ -231,7 +251,7 @@ public class SplashActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_SHORT).show();
                             descarregarXML();
-                            scheduleSplashScreen();
+                            //scheduleSplashScreen();
                         }
 
                     }
@@ -250,7 +270,7 @@ public class SplashActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_SHORT).show();
             new descarregarVersio().execute();
             descarregarXML();
-            scheduleSplashScreen();
+            //scheduleSplashScreen();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -424,6 +444,47 @@ public class SplashActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "XML Reserves afegit correctament", Toast.LENGTH_LONG).show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Funció que llegeix els registres d'Activitat-Categoria del fitxer XML i els afegeix a la BD
+    private void carregarActivitatCategoriaXMLaBD() {
+
+        File directori = getFilesDir();
+        File activitatCategoriaFitxer = new File(directori, "activitat_categoria.xml");
+
+        Serializer ser = new Persister();
+        ActivitatCategoriaXML activitatCategoriaXML = null;
+
+        try {
+            activitatCategoriaXML = ser.read(ActivitatCategoriaXML.class, activitatCategoriaFitxer);
+
+            ArrayList<ActivitatCategoria> activitatCategories = activitatCategoriaXML.getActivitatCategories();
+            int errCount = 0;
+
+            for (int i = 0; i < activitatCategories.size(); i++) {
+                ActivitatCategoria aux = activitatCategories.get(i);
+
+                String sqlQuery = "INSERT INTO activitat_categoria (id_activitat, id_categoria) " +
+                        "VALUES (" + aux.getIdActivitat() + ", " + aux.getIdCategoria() + ");";
+
+                // Executem la consulta i mostrem un missatge d\"estat OK o un missatge d\"error
+                try {
+                    baseDades.execSQL(sqlQuery);
+                } catch (SQLException e) {
+                    if (e.getMessage().contains("UNIQUE")) {
+                        errCount++;
+                    }
+                }
+            }
+
+            if (errCount > 0) {
+                Toast.makeText(this, "Error afegint XML" + errCount, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "XML ActivitatCategoria afegit correctament", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();

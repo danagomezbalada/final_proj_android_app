@@ -21,5 +21,6 @@ public class ClientFTP {
     public static String CATEGORIES = "categories.xml";
     public static String ACTIVITATS = "activitats.xml";
     public static String RESERVES = "reserves.xml";
+    public static String ACTIVITAT_CATEGORIA = "activitat_categoria.xml";
 
 }

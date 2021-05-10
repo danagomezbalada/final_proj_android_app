@@ -15,7 +15,7 @@ public class ActivitatCategoriaXML {
         this.activitatCategories = new ArrayList<>();
     }
 
-    public ArrayList<ActivitatCategoria> getCategories() {
+    public ArrayList<ActivitatCategoria> getActivitatCategories() {
         return activitatCategories;
     }
 
