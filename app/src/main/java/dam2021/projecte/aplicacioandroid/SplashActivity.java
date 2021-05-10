@@ -50,6 +50,9 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         mContext = this;
 
+        // Amaguem la barra superior
+        getSupportActionBar().hide();
+
         DBMS db = DBMS.getInstance(this);
         this.baseDades = db.getWritableDatabase();
 
@@ -79,7 +82,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Long result) {
-            String hola = "";
+
         }
     }
 
