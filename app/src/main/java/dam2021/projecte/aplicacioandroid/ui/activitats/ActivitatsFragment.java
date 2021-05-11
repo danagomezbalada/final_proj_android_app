@@ -17,19 +17,13 @@ import android.view.ViewGroup;
 
 import java.util.Date;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import dam2021.projecte.aplicacioandroid.DBMS;
 import dam2021.projecte.aplicacioandroid.R;
-import dam2021.projecte.aplicacioandroid.ui.activitats.dummy.DummyContent;
-import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
 
-/**
- * A fragment representing a list of Items.
- */
 public class ActivitatsFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";

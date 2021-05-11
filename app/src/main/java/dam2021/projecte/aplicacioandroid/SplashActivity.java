@@ -71,7 +71,7 @@ public class SplashActivity extends AppCompatActivity {
                 startActivity(i);
                 finish();
             }
-        }, 3 * 1000);
+        }, 10 * 1000);
     }
 
     // Classe que descarrega la versió amb asincronía
@@ -250,8 +250,9 @@ public class SplashActivity extends AppCompatActivity {
                             scheduleSplashScreen();
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_SHORT).show();
-                            descarregarXML();
-                            //scheduleSplashScreen();
+                            Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                            startActivity(i);
+                            finish();
                         }
 
                     }

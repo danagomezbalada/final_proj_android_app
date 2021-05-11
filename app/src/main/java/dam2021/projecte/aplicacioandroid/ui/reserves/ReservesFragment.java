@@ -27,13 +27,7 @@ import java.util.List;
 import dam2021.projecte.aplicacioandroid.DBMS;
 import dam2021.projecte.aplicacioandroid.R;
 import dam2021.projecte.aplicacioandroid.ui.activitats.Activitat;
-import dam2021.projecte.aplicacioandroid.ui.activitats.ActivitatXML;
-import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
-import dam2021.projecte.aplicacioandroid.ui.reserves.dummy.DummyContent;
 
-/**
- * A fragment representing a list of Items.
- */
 public class ReservesFragment extends Fragment {
 
 

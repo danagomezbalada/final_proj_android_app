@@ -55,6 +55,7 @@ public class CercarFragment extends Fragment {
             Categoria categoria = (Categoria) spinner.getSelectedItem();
             data = new Bundle();
             data.putInt("id", categoria.getId());
+            data.putString("origen", "cercar");
             Navigation.findNavController(view1)
                     .navigate(R.id.action_navigation_cercarFragment_to_activitatFragment, data);
         });
