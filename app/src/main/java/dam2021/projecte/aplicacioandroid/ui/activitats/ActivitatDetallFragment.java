@@ -94,10 +94,12 @@ public class ActivitatDetallFragment extends Fragment {
         TextView departament = view.findViewById(R.id.departament);
         TextView ponent = view.findViewById(R.id.ponent);
         ponent.setVisibility(View.INVISIBLE);
+        TextView categories = view.findViewById(R.id.categoria);
         Button reservar = view.findViewById(R.id.boto_reservar);
 
         if (comprovarReservaFeta()){
             reservar.setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.divisor_boto_reservar).setVisibility(View.INVISIBLE);
         }
 
         titol.setText(activitat.getTitol());
@@ -110,12 +112,14 @@ public class ActivitatDetallFragment extends Fragment {
             ponent.setVisibility(View.VISIBLE);
             ponent.setText("Ponent(s): " + activitat.getPonent());
         }
+        categories.setText("Categoria(es): " + obtenirCategories(activitat.getId()));
         reservar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 afegirReserva();
                 if (comprovarReservaFeta()){
                     reservar.setVisibility(View.INVISIBLE);
+                    view.findViewById(R.id.divisor_boto_reservar).setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -244,5 +248,22 @@ public class ActivitatDetallFragment extends Fragment {
             return true;
         }
         return false;
+    }
+
+    private String obtenirCategories(int idActivitat){
+        String query = "SELECT c.nom FROM activitat_categoria ac LEFT JOIN categoria c ON ac.id_categoria=c.id LEFT JOIN activitat a ON ac.id_activitat=a.id WHERE a.id = " + idActivitat + ";";
+        Cursor resultat = baseDades.rawQuery(query, null);
+
+        String aux = "";
+        for (int i = 0; resultat.moveToNext();i++){
+            if (i > 0){
+                aux += ", " + resultat.getString(0);
+            }else{
+                aux += resultat.getString(0);
+            }
+
+        }
+
+        return aux;
     }
 }
