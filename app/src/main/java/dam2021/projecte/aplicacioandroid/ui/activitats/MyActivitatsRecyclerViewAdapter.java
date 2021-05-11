@@ -51,6 +51,7 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
             data = new Bundle();
             int id = llistaActivitats.get(position).getId();
             data.putInt("id", id);
+            data.putString("origen", "activitats");
             Navigation.findNavController(v)
                     .navigate(R.id.action_navigation_activitatFragment_to_activitatDetallFragment, data);
 

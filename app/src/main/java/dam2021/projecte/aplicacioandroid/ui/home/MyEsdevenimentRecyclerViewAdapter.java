@@ -39,7 +39,8 @@ public class MyEsdevenimentRecyclerViewAdapter extends RecyclerView.Adapter<MyEs
 
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
-            data.putInt("idEsdeveniment", llistaEsdeveniments.get(position).getId());
+            data.putInt("id", llistaEsdeveniments.get(position).getId());
+            data.putString("origen", "esdeveniment");
             Navigation.findNavController(v)
                     .navigate(R.id.action_navigation_home_to_activitatFragment, data);
 

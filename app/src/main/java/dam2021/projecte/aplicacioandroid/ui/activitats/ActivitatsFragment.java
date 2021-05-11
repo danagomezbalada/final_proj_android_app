@@ -92,15 +92,15 @@ public class ActivitatsFragment extends Fragment {
 
         b = getArguments();
 
-        Integer idEsdeveniment = b.getInt("idEsdeveniment");
-        Integer idCategoria = b.getInt("idCategoria");
+        Integer id = b.getInt("id");
+        String origen = b.getString("origen");
 
         String query = "";
 
-        if (idEsdeveniment > 0){
-            query = "SELECT id, titol, data FROM activitat WHERE id_esdeveniment = "+ idEsdeveniment +" AND date('now') BETWEEN data_inici_mostra AND data_fi_mostra ;";
-        }else if(idCategoria > 0){
-            query = "SELECT a.id, a.titol, a.data, a.data_inici_mostra, a.data_fi_mostra FROM activitat_categoria ap JOIN activitat a ON ap.id_activitat = a.id WHERE ap.id_categoria = " + idCategoria + " AND date('now') BETWEEN a.data_inici_mostra AND a.data_fi_mostra ;";
+        if (origen.equals("esdeveniment")){
+            query = "SELECT id, titol, data FROM activitat WHERE id_esdeveniment = "+ id +" AND date('now') BETWEEN data_inici_mostra AND data_fi_mostra ;";
+        }else {
+            query = "SELECT a.id, a.titol, a.data, a.data_inici_mostra, a.data_fi_mostra FROM activitat_categoria ap JOIN activitat a ON ap.id_activitat = a.id WHERE ap.id_categoria = " + id + " AND date('now') BETWEEN a.data_inici_mostra AND a.data_fi_mostra ;";
         }
 
         Cursor resultat = baseDades.rawQuery(query, null);

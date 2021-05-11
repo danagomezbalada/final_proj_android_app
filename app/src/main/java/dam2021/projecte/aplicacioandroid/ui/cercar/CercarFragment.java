@@ -54,7 +54,7 @@ public class CercarFragment extends Fragment {
         view.findViewById(R.id.botoCerca).setOnClickListener(view1 -> {
             Categoria categoria = (Categoria) spinner.getSelectedItem();
             data = new Bundle();
-            data.putInt("idCategoria", categoria.getId());
+            data.putInt("id", categoria.getId());
             Navigation.findNavController(view1)
                     .navigate(R.id.action_navigation_cercarFragment_to_activitatFragment, data);
         });

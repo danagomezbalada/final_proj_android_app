@@ -56,8 +56,9 @@ public class MyReservesRecyclerViewAdapter extends RecyclerView.Adapter<MyReserv
         holder.mDataView.setText(llistaReserves.get(position).getActivitat().getTitol() + "\n" + llistaReserves.get(position).toString());
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
-            int id = llistaReserves.get(position).getId();
+            int id = llistaReserves.get(position).getActivitat().getId();
             data.putInt("id", id);
+            data.putString("origen", "reserves");
             Navigation.findNavController(v)
                     .navigate(R.id.action_navigation_reservesFragment_to_activitatDetallFragment, data);
 
