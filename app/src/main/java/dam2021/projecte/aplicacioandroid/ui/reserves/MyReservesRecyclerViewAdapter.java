@@ -1,7 +1,6 @@
 package dam2021.projecte.aplicacioandroid.ui.reserves;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,15 +14,9 @@ import android.widget.TextView;
 
 import dam2021.projecte.aplicacioandroid.R;
 
-import dam2021.projecte.aplicacioandroid.ui.home.Esdeveniment;
-import dam2021.projecte.aplicacioandroid.ui.reserves.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
- * TODO: Replace the implementation with code for your data type.
- */
 public class MyReservesRecyclerViewAdapter extends RecyclerView.Adapter<MyReservesRecyclerViewAdapter.ViewHolder> {
 
     private final List<Reserva> llistaReserves;
@@ -46,18 +39,20 @@ public class MyReservesRecyclerViewAdapter extends RecyclerView.Adapter<MyReserv
         holder.mItem = llistaReserves.get(position);
 
         if (llistaReserves.get(position).toString().equalsIgnoreCase("rebutjada")) {
-            holder.mDataView.setTextColor(Color.parseColor("#CB2806"));
+            holder.mEstatView.setTextColor(Color.parseColor("#CC0033"));
         }else if (llistaReserves.get(position).toString().equalsIgnoreCase("confirmada")) {
-            holder.mDataView.setTextColor(Color.parseColor("#3C9A07"));
+            holder.mEstatView.setTextColor(Color.parseColor("#3C9A07"));
         }else{
-            holder.mDataView.setTextColor(Color.parseColor("#FFBD33"));
+            holder.mEstatView.setTextColor(Color.parseColor("#FFBD33"));
         }
 
-        holder.mDataView.setText(llistaReserves.get(position).getActivitat().getTitol() + "\n" + llistaReserves.get(position).toString());
+        holder.mTitolView.setText(llistaReserves.get(position).getActivitat().getTitol());
+        holder.mEstatView.setText(llistaReserves.get(position).toString());
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
-            int id = llistaReserves.get(position).getId();
+            int id = llistaReserves.get(position).getActivitat().getId();
             data.putInt("id", id);
+            data.putString("origen", "reserves");
             Navigation.findNavController(v)
                     .navigate(R.id.action_navigation_reservesFragment_to_activitatDetallFragment, data);
 
@@ -71,21 +66,23 @@ public class MyReservesRecyclerViewAdapter extends RecyclerView.Adapter<MyReserv
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mDataView;
+        public final TextView mTitolView;
+        public final TextView mEstatView;
         public Reserva mItem;
         public final CardView mCard;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mDataView = view.findViewById(R.id.data);
+            mTitolView = view.findViewById(R.id.titol);
+            mEstatView = view.findViewById(R.id.estat);
             mCard = view.findViewById(R.id.card);
         }
 
         @Override
         @NonNull
         public String toString() {
-            return super.toString() + " '" + mDataView.getText() + "'";
+            return super.toString() + " '" + mTitolView.getText() + "'";
         }
     }
 }

@@ -1,7 +1,6 @@
 package dam2021.projecte.aplicacioandroid.ui.activitats;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import dam2021.projecte.aplicacioandroid.R;
-
-import dam2021.projecte.aplicacioandroid.ui.activitats.dummy.DummyContent.DummyItem;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -43,7 +40,8 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = llistaActivitats.get(position);
         String dataActivitat = simpleDateFormat.format(llistaActivitats.get(position).getData());
-        holder.mDataView.setText(llistaActivitats.get(position).getTitol() + "\n" + dataActivitat);
+        holder.mTitolView.setText(llistaActivitats.get(position).getTitol());
+        holder.mDataView.setText(dataActivitat);
 
         //holder.mDataView.setText(dataActivitat);
 
@@ -51,6 +49,7 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
             data = new Bundle();
             int id = llistaActivitats.get(position).getId();
             data.putInt("id", id);
+            data.putString("origen", "activitats");
             Navigation.findNavController(v)
                     .navigate(R.id.action_navigation_activitatFragment_to_activitatDetallFragment, data);
 
@@ -64,6 +63,7 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
+        public final TextView mTitolView;
         public final TextView mDataView;
         public Activitat mItem;
         public final CardView mCard;
@@ -71,6 +71,7 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
         public ViewHolder(View view) {
             super(view);
             mView = view;
+            mTitolView = view.findViewById(R.id.titol);
             mDataView = view.findViewById(R.id.data);
             mCard = view.findViewById(R.id.card);
         }

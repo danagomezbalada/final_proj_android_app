@@ -62,16 +62,29 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    private void scheduleSplashScreen() {
-        new Handler().postDelayed(new Runnable() {
+    private void scheduleSplashScreen(String mode) {
 
-            @Override
-            public void run() {
-                Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                startActivity(i);
-                finish();
-            }
-        }, 3 * 1000);
+        if (mode.equals("short")){
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+            }, 3 * 1000);
+        }else{
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+            }, 10 * 1000);
+        }
     }
 
     // Classe que descarrega la versió amb asincronía
@@ -159,7 +172,7 @@ public class SplashActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Long result) {
             carregarActivitatCategoriaXMLaBD();
-            scheduleSplashScreen();
+            scheduleSplashScreen("long");
         }
     }
 
@@ -245,13 +258,12 @@ public class SplashActivity extends AppCompatActivity {
                         // Comparem les versions dels fitxers versió (local vs descarregat FTP)
                         int retval = Double.compare(versioNou, versioLocal);
                         if (retval > 0) {
-                            Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_LONG).show();
                             descarregarXML();
-                            scheduleSplashScreen();
+                            scheduleSplashScreen("long");
                         } else {
-                            Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_SHORT).show();
-                            descarregarXML();
-                            //scheduleSplashScreen();
+                            Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_LONG).show();
+                            scheduleSplashScreen("short");
                         }
 
                     }
@@ -267,7 +279,7 @@ public class SplashActivity extends AppCompatActivity {
         } catch (FileNotFoundException ef) {
 
             // Si no troba el fitxer de la versió al dispositiu, descarrega tots els fitxers i passem a la LoginActivity
-            Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_LONG).show();
             new descarregarVersio().execute();
             descarregarXML();
             //scheduleSplashScreen();
