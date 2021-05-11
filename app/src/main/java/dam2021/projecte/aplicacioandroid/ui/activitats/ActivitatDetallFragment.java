@@ -71,11 +71,24 @@ public class ActivitatDetallFragment extends Fragment {
         this.baseDades = db.getWritableDatabase();
         afegirActivitat(baseDades);
 
-        TextView id = view.findViewById(R.id.titol);
+        TextView titol = view.findViewById(R.id.titol);
         TextView data = view.findViewById(R.id.data);
-        id.setText(activitat.getTitol());
+        TextView ubicacio = view.findViewById(R.id.ubicacio);
+        TextView descripcio = view.findViewById(R.id.descripcio);
+        TextView departament = view.findViewById(R.id.departament);
+        TextView ponent = view.findViewById(R.id.ponent);
+        ponent.setVisibility(View.INVISIBLE);
+
+        titol.setText(activitat.getTitol());
         String dataActivitat = simpleDateFormat.format(activitat.getData());
         data.setText(dataActivitat);
+        ubicacio.setText("Ubicacio: " + activitat.getUbicacio());
+        descripcio.setText(activitat.getDescripcio());
+        departament.setText("Departament: " + activitat.getDepartament());
+        if (!activitat.getPonent().equals("null")){
+            ponent.setVisibility(View.VISIBLE);
+            ponent.setText("Ponent(s): " + activitat.getPonent());
+        }
 
         return view;
     }
@@ -86,7 +99,8 @@ public class ActivitatDetallFragment extends Fragment {
 
         String query = "";
         if (id > 0){
-            query = "SELECT id, titol, data FROM activitat WHERE id = "+ id +" AND date('now') BETWEEN data_inici_mostra AND data_fi_mostra ;";
+            query = "SELECT id, titol, data, ubicacio, descripcio, departament, ponent " +
+                    "FROM activitat WHERE id = "+ id +" AND date('now') BETWEEN data_inici_mostra AND data_fi_mostra ;";
         }
         Cursor resultat = baseDades.rawQuery(query, null);
 
@@ -99,10 +113,13 @@ public class ActivitatDetallFragment extends Fragment {
                 activitat = new Activitat();
                 activitat.setId(resultat.getInt(0));
                 activitat.setTitol(resultat.getString(1));
-
                 Date data = formatData.parse(resultat.getString(2));
-
                 activitat.setData(data);
+                activitat.setUbicacio(resultat.getString(3));
+                activitat.setDescripcio(resultat.getString(4));
+                activitat.setDepartament(resultat.getString(5));
+                activitat.setPonent(resultat.getString(6));
+
             }
         } catch (Exception e){
             e.printStackTrace();
