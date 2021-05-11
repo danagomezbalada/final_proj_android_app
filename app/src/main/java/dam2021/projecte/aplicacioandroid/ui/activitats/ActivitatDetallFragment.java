@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -32,6 +33,7 @@ import java.util.Random;
 
 import dam2021.projecte.aplicacioandroid.DBMS;
 import dam2021.projecte.aplicacioandroid.R;
+import dam2021.projecte.aplicacioandroid.ui.login.LoginActivity;
 import dam2021.projecte.aplicacioandroid.ui.reserves.Reserva;
 import dam2021.projecte.aplicacioandroid.ui.reserves.ReservaFB;
 
@@ -216,6 +218,9 @@ public class ActivitatDetallFragment extends Fragment {
                     reserves.put("R" + reservaActual.getId(), reservaFB);
 
                     myRef.setValue(reservaFB);
+
+                    Toast.makeText(getActivity(), R.string.reserva_afegida,
+                            Toast.LENGTH_LONG).show();
 
                 } catch (ParseException e) {
                     e.printStackTrace();
