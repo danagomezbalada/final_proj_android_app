@@ -52,15 +52,16 @@ public class ActivitatDetallFragment extends Fragment {
     private SQLiteDatabase baseDades;
     private Activitat activitat;
 
+    // Formatar les dates
     private DateFormat formatData = new SimpleDateFormat("yyyy-MM-dd");
     String pattern = "dd-MM-yyyy";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
     public ActivitatDetallFragment() {
-        // Required empty public constructor
+
     }
 
-    // TODO: Rename and change types and number of parameters
+
     public static ActivitatDetallFragment newInstance(String param1, String param2) {
         ActivitatDetallFragment fragment = new ActivitatDetallFragment();
         Bundle args = new Bundle();
@@ -97,9 +98,10 @@ public class ActivitatDetallFragment extends Fragment {
         TextView ponent = view.findViewById(R.id.ponent);
         ponent.setVisibility(View.INVISIBLE);
         TextView categories = view.findViewById(R.id.categoria);
+        TextView placesActuals = view.findViewById(R.id.places_actuals);
         Button reservar = view.findViewById(R.id.boto_reservar);
 
-        if (comprovarReservaFeta()){
+        if (comprovarReservaFeta()) {
             reservar.setVisibility(View.INVISIBLE);
             view.findViewById(R.id.divisor_boto_reservar).setVisibility(View.INVISIBLE);
         }
@@ -110,16 +112,17 @@ public class ActivitatDetallFragment extends Fragment {
         ubicacio.setText("Ubicacio: " + activitat.getUbicacio());
         descripcio.setText(activitat.getDescripcio());
         departament.setText("Departament: " + activitat.getDepartament());
-        if (!activitat.getPonent().equals("null")){
+        if (!activitat.getPonent().equals("null")) {
             ponent.setVisibility(View.VISIBLE);
             ponent.setText("Ponent(s): " + activitat.getPonent());
         }
         categories.setText("Categoria(es): " + obtenirCategories(activitat.getId()));
+        placesActuals.setText("Places actuals: " + activitat.getPlacesActuals());
         reservar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 afegirReserva();
-                if (comprovarReservaFeta()){
+                if (comprovarReservaFeta()) {
                     reservar.setVisibility(View.INVISIBLE);
                     view.findViewById(R.id.divisor_boto_reservar).setVisibility(View.INVISIBLE);
                 }
@@ -129,18 +132,24 @@ public class ActivitatDetallFragment extends Fragment {
         return view;
     }
 
+    // Afegim les activitats a l'arrayList
     private void afegirActivitat(SQLiteDatabase baseDades) {
+
+        // Obtenim els arguments del bundle rebut del fragment anterior
         b = getArguments();
+
+        // Establim els valors rebuts pel bundle
         Integer id = b.getInt("id");
         String origen = b.getString("origen");
         String query = "";
 
-        if (origen.equals("activitats")){
-            query = "SELECT id, titol, data, ubicacio, descripcio, departament, ponent " +
-                    "FROM activitat WHERE id = "+ id +" AND date('now') BETWEEN data_inici_mostra AND data_fi_mostra ;";
-        }else{
-            query = "SELECT id, titol, data, ubicacio, descripcio, departament, ponent " +
-                    "FROM activitat WHERE id = "+ id +";";
+        // Comprovem d'on venim gràcies als valors obtinguts del bundle i depenent de l'origen executem una consulta o una altra
+        if (origen.equals("activitats")) {
+            query = "SELECT id, titol, data, places_actuals, ubicacio, descripcio, departament, ponent " +
+                    "FROM activitat WHERE id = " + id + " AND date('now') BETWEEN data_inici_mostra AND data_fi_mostra ;";
+        } else {
+            query = "SELECT id, titol, data, places_actuals, ubicacio, descripcio, departament, ponent " +
+                    "FROM activitat WHERE id = " + id + ";";
         }
 
 
@@ -151,59 +160,60 @@ public class ActivitatDetallFragment extends Fragment {
 
         // Si la consulta ha obtingut resultats, afegim les dades obtingudes a una instancia d'Activitat
         try {
-            if (resultat.moveToNext()){
+            if (resultat.moveToNext()) {
                 activitat = new Activitat();
                 activitat.setId(resultat.getInt(0));
                 activitat.setTitol(resultat.getString(1));
                 Date data = formatData.parse(resultat.getString(2));
                 activitat.setData(data);
-                activitat.setUbicacio(resultat.getString(3));
-                activitat.setDescripcio(resultat.getString(4));
-                activitat.setDepartament(resultat.getString(5));
-                activitat.setPonent(resultat.getString(6));
+                activitat.setPlacesActuals(resultat.getInt(3));
+                activitat.setUbicacio(resultat.getString(4));
+                activitat.setDescripcio(resultat.getString(5));
+                activitat.setDepartament(resultat.getString(6));
+                activitat.setPonent(resultat.getString(7));
 
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            Log.e("SQL",resultat.getString(2));
-        }
-        finally {
+            Log.e("SQL", resultat.getString(2));
+        } finally {
             // Tanquem el cursor un cop hem acabat
             resultat.close();
         }
     }
 
-    private void afegirReserva(){
+    // Cridem aquesta funció quan cliquem al botó reservar
+    private void afegirReserva() {
 
         char[] CHARSET_AZ_09 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 
         boolean afegit = false;
 
-
-        while (!afegit){
+        // Bucle per evitar la introducció de un codi duplicat a la BD
+        while (!afegit) {
 
             String codiTrans = generarCodiTrans(CHARSET_AZ_09, 8);
             String query = "";
-            query = "SELECT * FROM reserva WHERE codi_transaccio = \""+ codiTrans + "\";";
+            query = "SELECT * FROM reserva WHERE codi_transaccio = \"" + codiTrans + "\";";
             Cursor resultat = baseDades.rawQuery(query, null);
 
-            if (!resultat.moveToNext()){
+            if (!resultat.moveToNext()) {
                 query = "INSERT INTO reserva (email, id_activitat, data, codi_transaccio, estat) " +
-                        "VALUES (\""+ emailUsuari + "\", " + activitat.getId() + ", date('now'), \"" + codiTrans + "\"," + 0 + ");";
+                        "VALUES (\"" + emailUsuari + "\", " + activitat.getId() + ", date('now'), \"" + codiTrans + "\"," + 0 + ");";
                 try {
                     baseDades.execSQL(query);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
 
-                query = "SELECT * FROM reserva WHERE codi_transaccio = \""+ codiTrans + "\";";
+                query = "SELECT * FROM reserva WHERE codi_transaccio = \"" + codiTrans + "\";";
                 resultat = baseDades.rawQuery(query, null);
                 resultat.moveToNext();
 
                 try {
 
                     Date dataReservaActual = formatData.parse(resultat.getString(3));
-                    Reserva reservaActual = new Reserva(resultat.getInt(0),resultat.getString(1),resultat.getInt(2),dataReservaActual,resultat.getString(4),resultat.getInt(5));
+                    Reserva reservaActual = new Reserva(resultat.getInt(0), resultat.getString(1), resultat.getInt(2), dataReservaActual, resultat.getString(4), resultat.getInt(5));
 
                     FirebaseDatabase database = FirebaseDatabase.getInstance("https://aplicacio-android-default-rtdb.europe-west1.firebasedatabase.app/");
                     DatabaseReference myRef = database.getReference("R" + reservaActual.getId());
@@ -212,7 +222,7 @@ public class ActivitatDetallFragment extends Fragment {
                     SimpleDateFormat simpleDateFormatReserva = new SimpleDateFormat(patternReserva);
                     String dataReserva = simpleDateFormatReserva.format(reservaActual.getData());
 
-                    ReservaFB reservaFB = new ReservaFB(reservaActual.getEmail(), reservaActual.getIdActivitat(),dataReserva,reservaActual.getCodiTransaccio(), reservaActual.getEstat());
+                    ReservaFB reservaFB = new ReservaFB(reservaActual.getEmail(), reservaActual.getIdActivitat(), dataReserva, reservaActual.getCodiTransaccio(), reservaActual.getEstat());
 
                     Map<String, ReservaFB> reserves = new HashMap<>();
                     reserves.put("R" + reservaActual.getId(), reservaFB);
@@ -233,7 +243,8 @@ public class ActivitatDetallFragment extends Fragment {
 
     }
 
-    private String generarCodiTrans(char[] characterSet, int length){
+    // Funció que genera un codi alfanumèric aleatori
+    private String generarCodiTrans(char[] characterSet, int length) {
 
         Random random = new SecureRandom();
         char[] result = new char[length];
@@ -245,25 +256,25 @@ public class ActivitatDetallFragment extends Fragment {
         return new String(result);
     }
 
-    private boolean comprovarReservaFeta(){
-        String query = "SELECT * FROM reserva WHERE id_activitat = "+ b.getInt("id") + " AND email = \"" + emailUsuari + "\";";
+    private boolean comprovarReservaFeta() {
+        String query = "SELECT * FROM reserva WHERE id_activitat = " + b.getInt("id") + " AND email = \"" + emailUsuari + "\";";
         Cursor resultat = baseDades.rawQuery(query, null);
 
-        if (resultat.moveToNext()){
+        if (resultat.moveToNext()) {
             return true;
         }
         return false;
     }
 
-    private String obtenirCategories(int idActivitat){
+    private String obtenirCategories(int idActivitat) {
         String query = "SELECT c.nom FROM activitat_categoria ac LEFT JOIN categoria c ON ac.id_categoria=c.id LEFT JOIN activitat a ON ac.id_activitat=a.id WHERE a.id = " + idActivitat + ";";
         Cursor resultat = baseDades.rawQuery(query, null);
 
         String aux = "";
-        for (int i = 0; resultat.moveToNext();i++){
-            if (i > 0){
+        for (int i = 0; resultat.moveToNext(); i++) {
+            if (i > 0) {
                 aux += ", " + resultat.getString(0);
-            }else{
+            } else {
                 aux += resultat.getString(0);
             }
 

@@ -87,14 +87,12 @@ public class ReservesFragment extends Fragment {
 
     private void afegirReserves(SQLiteDatabase baseDades) {
 
+        // Obtenim l'email de l'usuari
         FirebaseUser usuari = FirebaseAuth.getInstance().getCurrentUser();
         String emailUsuari = usuari.getEmail();
 
-        String query = "SELECT id, email, id_activitat, data, codi_transaccio, estat FROM reserva WHERE email = '" + emailUsuari + "'";
+        String query = "SELECT id, email, id_activitat, data, codi_transaccio, estat FROM reserva WHERE email = \"" + emailUsuari + "\" ORDER BY data ASC;";
         Cursor resultat = baseDades.rawQuery(query, null);
-
-        if (resultat == null)
-            return;
 
             // Si la consulta ha obtingut resultats, anem afegint aquests a l'ArrayList
             try {
@@ -115,8 +113,9 @@ public class ReservesFragment extends Fragment {
             }
     }
 
+    // Obtenim l'activitat a partir de la seva id
     private Activitat obtenirActivitat(int id) {
-        String query = "SELECT id, titol, data, ubicacio, descripcio, departament, ponent, preu, places_totals, places_actuals, id_esdeveniment, data_inici_mostra, data_fi_mostra FROM activitat WHERE id = '" + id + "'";
+        String query = "SELECT id, titol, data, ubicacio, descripcio, departament, ponent, preu, places_totals, places_actuals, id_esdeveniment, data_inici_mostra, data_fi_mostra FROM activitat WHERE id = " + id + ";";
         Cursor resultat = baseDades.rawQuery(query, null);
         resultat.moveToNext();
 
