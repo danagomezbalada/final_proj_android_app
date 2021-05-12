@@ -51,6 +51,7 @@ public class MyReservesRecyclerViewAdapter extends RecyclerView.Adapter<MyReserv
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
             int id = llistaReserves.get(position).getActivitat().getId();
+            // Introduim les dades necessàries al bundle i el passem quan naveguem al fragment
             data.putInt("id", id);
             data.putString("origen", "reserves");
             Navigation.findNavController(v)

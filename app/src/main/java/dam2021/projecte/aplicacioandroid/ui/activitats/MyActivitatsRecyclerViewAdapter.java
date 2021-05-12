@@ -48,6 +48,7 @@ public class MyActivitatsRecyclerViewAdapter extends RecyclerView.Adapter<MyActi
         holder.mCard.setOnClickListener(v -> {
             data = new Bundle();
             int id = llistaActivitats.get(position).getId();
+            // Enviem al fragment de destí la informació amb un Bundle
             data.putInt("id", id);
             data.putString("origen", "activitats");
             Navigation.findNavController(v)

@@ -260,7 +260,6 @@ public class SplashActivity extends AppCompatActivity {
                         if (retval > 0) {
                             Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_LONG).show();
                             descarregarXML();
-                            scheduleSplashScreen("long");
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_LONG).show();
                             scheduleSplashScreen("short");

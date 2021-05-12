@@ -126,6 +126,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                // Obtenim la instància de FireBase
                 mAuth = FirebaseAuth.getInstance();
 
                 String email = usernameEditText.getText().toString();
@@ -134,6 +135,7 @@ public class LoginActivity extends AppCompatActivity {
                 email = email.trim();
                 password = password.trim();
 
+                // Comprovem la validesa dels camps
                 if (email.isEmpty() || password.isEmpty()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setMessage("R.string.login_error_message")
@@ -142,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 } else {
+                    // Iniciem sessió a firebase amb el
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                 @Override

@@ -1,5 +1,9 @@
 package dam2021.projecte.aplicacioandroid.ui.reserves;
 
+/**
+ * Classe auxiliar que utilitzem per escriure objectes a Realtime Database de Firebase
+ * amb els camps que volem i amb el format que volem
+ */
 public class ReservaFB {
 
     private String email;
