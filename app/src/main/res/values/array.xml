@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="test_array">
+        <item>Esport</item>
+        <item>Cultura</item>
+        <item>Musica</item>
+        <item>Tecnologia</item>
+        <item>Natura</item>
+        <item>Entreteniment</item>
+        <item>Familia</item>
+    </string-array>
+</resources>
