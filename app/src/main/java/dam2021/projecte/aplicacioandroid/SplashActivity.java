@@ -46,6 +46,9 @@ public class SplashActivity extends AppCompatActivity {
     private String pattern = "yyyy-MM-dd";
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
 
+    private Double versioLocal;
+    private Double versioNou;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +67,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void scheduleSplashScreen(String mode) {
 
-        if (mode.equals("short")){
+        if (mode.equals("short")) {
             new Handler().postDelayed(new Runnable() {
 
                 @Override
@@ -74,7 +77,7 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }
             }, 3 * 1000);
-        }else{
+        } else {
             new Handler().postDelayed(new Runnable() {
 
                 @Override
@@ -97,7 +100,7 @@ public class SplashActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Long result) {
-
+            compararVersions();
         }
     }
 
@@ -242,36 +245,10 @@ public class SplashActivity extends AppCompatActivity {
             if ((line = br.readLine()) != null) {
 
                 // Desem la versió del fitxer local
-                Double versioLocal = Double.parseDouble(line);
+                versioLocal = Double.parseDouble(line);
 
-                try {
-                    // Descarreguem el fitxer versió del FTP
-                    new descarregarVersio().execute();
-                    versio = new File(directori, "versio.txt");
-                    BufferedReader brNou = new BufferedReader(new FileReader(versio));
-                    String lineNou;
-
-                    // Llegim el fitxer i comprovem si té contingut a la primera línia
-                    if ((lineNou = brNou.readLine()) != null) {
-                        Double versioNou = Double.parseDouble(lineNou);
-
-                        // Comparem les versions dels fitxers versió (local vs descarregat FTP)
-                        int retval = Double.compare(versioNou, versioLocal);
-                        if (retval > 0) {
-                            Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_LONG).show();
-                            descarregarXML();
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_LONG).show();
-                            scheduleSplashScreen("short");
-                        }
-
-                    }
-
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                // Descarreguem el fitxer versió del FTP
+                new descarregarVersio().execute();
             }
 
             br.close();
@@ -285,6 +262,46 @@ public class SplashActivity extends AppCompatActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Funció que compara la versió del fitxer actual de l'aplicació (si existeix) amb la del fitxer descarregat del FTP
+    private void compararVersions() {
+
+        if (versioLocal != null) {
+
+            File directori = getFilesDir();
+            File versio = new File(directori, "versio.txt");
+            BufferedReader brNou = null;
+            try {
+                brNou = new BufferedReader(new FileReader(versio));
+
+                String lineNou;
+
+                // Llegim el fitxer i comprovem si té contingut a la primera línia
+                if ((lineNou = brNou.readLine()) != null) {
+                    versioNou = Double.parseDouble(lineNou);
+
+                    // Comparem les versions dels fitxers versió (local vs descarregat FTP)
+                    int retval = Double.compare(versioNou, versioLocal);
+                    if (retval > 0) {
+                        Toast.makeText(getApplicationContext(), R.string.new_version_available, Toast.LENGTH_LONG).show();
+                        descarregarXML();
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.already_last_version, Toast.LENGTH_LONG).show();
+                        scheduleSplashScreen("short");
+                    }
+
+                }
+                brNou.close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } else {
+            return;
         }
     }
 
